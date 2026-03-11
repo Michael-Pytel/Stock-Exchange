@@ -20,4 +20,7 @@ urlpatterns = [
     path("verify/<uidb64>/<token>/",    views.verify_email,      name="verify_email"),
     path("forgot-password/",            views.forgot_password,   name="forgot_password"),
     path("reset/<uidb64>/<token>/",     views.reset_password,    name="reset_password"),
+
+    path("forecast/<str:symbol>/", views.forecast_json, name="forecast_json"),
+    path('ml-models/', views.ml_models_view, name='ml_models'),
 ]

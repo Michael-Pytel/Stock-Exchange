@@ -1,0 +1,34 @@
+{% extends "trading/base.html" %}
+{% load static %}
+
+{% block title %}ML Models — StockExchange{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'trading/css/trading.css' %}"/>
+<link rel="stylesheet" href="{% static 'trading/css/forecast.css' %}"/>
+{% endblock %}
+
+{% block content %}
+
+<!-- TOP NAV BAR (z base.html będzie już automatycznie) -->
+
+<div class="trade-layout">
+
+  <!-- LEFT: ML Models list -->
+
+    <div class="forecast-heading">
+      <div class="forecast-heading-title">Machine Learning Models Overview</div>
+      <div class="forecast-heading-sub">TO DO</div>
+    </div>
+
+  </div>
+
+  
+
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<!-- Tutaj jeśli chcesz dodatkowy JS dla ML Models -->
+{% endblock %}

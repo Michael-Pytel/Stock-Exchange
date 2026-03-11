@@ -12,9 +12,18 @@ from django.utils.encoding import force_bytes, force_str
 from django.urls import reverse
 from django.contrib import messages
 from django.views.decorators.http import require_POST
+from autogluon.timeseries import TimeSeriesPredictor, TimeSeriesDataFrame
+import plotly.graph_objects as go
+import pandas as pd
+import os
+from django.conf import settings
 
 from decouple import config
 from .models import CustomUser, Position
+
+# ----------------Autogluon models -----------------
+AUTOGLUON_MODEL_PATH = os.path.join(settings.BASE_DIR, "trading", "autogluon_models", "gluon_models")
+_predictor_cache = None
 
 # ── Alpaca ──────────────────────────────────────────────────────
 ALPACA_API_KEY    = config("ALPACA_API_KEY")
@@ -141,6 +150,8 @@ def trading_view(request, symbol="AAPL"):
         position = Position.objects.get(user=request.user, symbol=symbol)
     except Position.DoesNotExist:
         position = None
+
+   
 
     context = {
         "stocks":        STOCKS,
@@ -478,3 +489,132 @@ def reset_password(request, uidb64, token):
             return redirect("login")
 
     return render(request, "trading/reset_password.html", {"uidb64": uidb64, "token": token})
+
+# ---------------- Autogluon model load ----------------
+def _get_predictor():
+    global _predictor_cache
+    if _predictor_cache is None:
+        _predictor_cache = TimeSeriesPredictor.load(AUTOGLUON_MODEL_PATH)
+    return _predictor_cache
+
+
+def _fetch_for_autogluon(ticker, past_days=1200):
+    """
+    Pobiera dane z Alpaca i zwraca TimeSeriesDataFrame gotowy do predict().
+    Zakłada że masz funkcję add_features() w preprocessing.py obok views.py
+    lub zamiast niej możesz usunąć tę linię jeśli nie używasz feature engineeringu.
+    """
+    from autogluon.timeseries import TimeSeriesDataFrame
+    import pandas as pd
+    end   = datetime.utcnow()
+    start = end - timedelta(days=past_days)
+
+    headers = {
+        "APCA-API-KEY-ID":     ALPACA_API_KEY,
+        "APCA-API-SECRET-KEY": ALPACA_SECRET_KEY,
+    }
+    params = {
+        "start":     start.strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "end":       end.strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "timeframe": "1Day",
+        "limit":     past_days,
+        "feed":      "iex",
+    }
+
+    resp = requests.get(
+        f"{ALPACA_DATA_URL}/stocks/{ticker}/bars",
+        headers=headers, params=params, timeout=60,
+    )
+    resp.raise_for_status()
+    bars = resp.json().get("bars", [])
+    if not bars:
+        raise ValueError(f"Brak danych dla {ticker}")
+
+    df = pd.DataFrame(bars).rename(columns={
+        "t": "timestamp", "o": "open", "h": "high",
+        "l": "low",       "c": "close", "v": "volume",
+    })
+    df["timestamp"] = (
+        pd.to_datetime(df["timestamp"], utc=True)
+        .dt.tz_localize(None)
+        .dt.normalize()
+    )
+    df["ticker"] = ticker
+
+    import sys
+    autogluon_dir = os.path.join(settings.BASE_DIR, "trading", "autogluon_models")
+    if autogluon_dir not in sys.path:
+        sys.path.insert(0, autogluon_dir)
+
+    from preprocessing import add_features
+    df = add_features(df)
+
+    ts_data = TimeSeriesDataFrame.from_data_frame(
+        df, id_column="ticker", timestamp_column="timestamp"
+    )
+    return ts_data
+
+@login_required(login_url="/login/")
+def forecast_json(request, symbol="AAPL"):
+    """
+    GET /forecast/<symbol>/
+    Zwraca JSON z historią i prognozą kwantylową do narysowania w Chart.js.
+    """
+    import pandas as pd
+
+    symbol = symbol.upper()
+    if symbol not in STOCKS:
+        return JsonResponse({"error": "Invalid symbol"}, status=400)
+
+    try:
+        predictor  = _get_predictor()
+        ts_data    = _fetch_for_autogluon(symbol)
+        forecast   = predictor.predict(ts_data)
+
+        history    = ts_data.loc[symbol].tail(20)
+        future     = forecast.loc[symbol]
+        target_col = predictor.target
+
+        # Historia — daty i wartości
+        history_out = [
+            {"date": str(idx.date()), "value": round(float(row[target_col]), 6)}
+            for idx, row in history.iterrows()
+        ]
+
+        # Forecast — kwantyle dla każdego dnia
+        forecast_out = []
+        for idx, row in future.iterrows():
+            forecast_out.append({
+                "date":   str(idx.date()),
+                "q005":   round(float(row["0.05"]),  6),
+                "q01":    round(float(row["0.1"]),   6),
+                "q03":    round(float(row["0.3"]),   6),
+                "median": round(float(row["0.5"]),   6),
+                "q07":    round(float(row["0.7"]),   6),
+                "q09":    round(float(row["0.9"]),   6),
+                "q095":   round(float(row["0.95"]),  6),
+            })
+
+        last_val = history_out[-1]["value"]
+
+        return JsonResponse({
+            "symbol":   symbol,
+            "history":  history_out,
+            "forecast": forecast_out,
+            "last_val": last_val,
+        })
+
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=500)
+    
+
+def ml_models_view(request):
+    """
+    Strona z opisem modeli (TO DO)
+    """
+    models_info = [
+        {"name": "Random Forest", "desc": "Tree-based ensemble model for regression."},
+        {"name": "LSTM", "desc": "Recurrent neural network capturing temporal dependencies."},
+        # dodaj więcej modeli
+    ]
+    return render(request, "trading/ml_models.html", {"models": models_info})

@@ -1,0 +1,1786 @@
+Beginning AutoGluon training... Time limit = 36000s
+AutoGluon will save models to 'c:\Users\rogal\MojGithub\Stock-Market-Forecasting\autogluon_modeling\gluon_models'
+=================== System Info ===================
+AutoGluon Version:  1.5.0
+Python Version:     3.10.19
+Operating System:   Windows
+Platform Machine:   AMD64
+Platform Version:   10.0.26200
+CPU Count:          8
+Pytorch Version:    2.9.1+cpu
+CUDA Version:       CUDA is not available
+GPU Memory:         
+Total GPU Memory:   Free: 0.00 GB, Allocated: 0.00 GB, Total: 0.00 GB
+GPU Count:          0
+Memory Avail:       3.05 GB / 15.74 GB (19.4%)
+Disk Space Avail:   74.40 GB / 457.28 GB (16.3%)
+===================================================
+Setting presets to: high_quality
+
+Fitting with arguments:
+{'enable_ensemble': True,
+ 'eval_metric': RMSE,
+ 'freq': 'B',
+ 'hyperparameters': {'AutoETS': {},
+                     'Chronos2': {},
+                     'DeepAR': {'context_length': 100,
+                                'likelihood': 'student-t',
+                                'num_layers': 3,
+                                'regression_full_covariance': True},
+                     'PatchTST': {'context_length': 252},
+                     'RecursiveTabular': {},
+                     'TemporalFusionTransformer': {'context_length': 120},
+                     'Theta': {}},
+ 'known_covariates_names': [],
+ 'num_val_windows': 1,
+ 'prediction_length': 5,
+ 'quantile_levels': [0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.95],
+ 'random_seed': 123,
+ 'refit_every_n_windows': 1,
+ 'refit_full': False,
+ 'skip_model_selection': False,
+ 'target': 'Return_1d',
+ 'time_limit': 36000,
+ 'verbosity': 2}
+
+Provided train_data has 8088 rows, 9 time series. Median time series length is 898 (min=898, max=901). 
+
+Provided data contains following columns:
+	target: 'Return_1d'
+	past_covariates:
+		categorical:        []
+		continuous (float): ['close', 'high', 'low', 'trade_count', 'open', 'volume', ...]
+
+To learn how to fix incorrectly inferred types, please see documentation for TimeSeriesPredictor.fit
+
+AutoGluon will gauge predictive performance using evaluation metric: 'RMSE'
+	This metric's sign has been flipped to adhere to being higher_is_better. The metric score can be multiplied by -1 to get the metric value.
+===================================================
+
+Starting training. Start time is 2026-03-10 17:46:36
+Models that will be trained: ['RecursiveTabular', 'Theta', 'Chronos2', 'AutoETS', 'TemporalFusionTransformer', 'DeepAR', 'PatchTST']
+Training timeseries model RecursiveTabular. Training for up to 5056.7s of the 35996.9s of remaining time.
+	-0.0001       = Validation score (-RMSE)
+	1.08    s     = Training runtime
+	0.05    s     = Validation (prediction) runtime
+Training timeseries model Theta. Training for up to 5899.3s of the 35995.7s of remaining time.
+	-0.0017       = Validation score (-RMSE)
+	0.02    s     = Training runtime
+	5.67    s     = Validation (prediction) runtime
+Training timeseries model Chronos2. Training for up to 7078.0s of the 35990.0s of remaining time.
+	-0.0002       = Validation score (-RMSE)
+	5.83    s     = Training runtime
+	32.88   s     = Validation (prediction) runtime
+Training timeseries model AutoETS. Training for up to 8837.8s of the 35951.3s of remaining time.
+	-0.0000       = Validation score (-RMSE)
+	0.02    s     = Training runtime
+	0.28    s     = Validation (prediction) runtime
+Training timeseries model TemporalFusionTransformer. Training for up to 11783.7s of the 35951.0s of remaining time.
+Warning: path already exists! This predictor may overwrite an existing predictor! path="gluon_models"
+Beginning AutoGluon training... Time limit = 36000s
+Beginning AutoGluon training... Time limit = 36000s
+AutoGluon will save models to 'c:\Users\rogal\MojGithub\Stock-Market-Forecasting\autogluon_modeling\gluon_models'
+AutoGluon will save models to 'c:\Users\rogal\MojGithub\Stock-Market-Forecasting\autogluon_modeling\gluon_models'
+=================== System Info ===================
+AutoGluon Version:  1.5.0
+Python Version:     3.10.19
+Operating System:   Windows
+Platform Machine:   AMD64
+Platform Version:   10.0.26200
+CPU Count:          8
+Pytorch Version:    2.9.1+cpu
+CUDA Version:       CUDA is not available
+GPU Memory:         
+Total GPU Memory:   Free: 0.00 GB, Allocated: 0.00 GB, Total: 0.00 GB
+GPU Count:          0
+Memory Avail:       1.80 GB / 15.74 GB (11.4%)
+Disk Space Avail:   74.40 GB / 457.28 GB (16.3%)
+===================================================
+=================== System Info ===================
+AutoGluon Version:  1.5.0
+Python Version:     3.10.19
+Operating System:   Windows
+Platform Machine:   AMD64
+Platform Version:   10.0.26200
+CPU Count:          8
+Pytorch Version:    2.9.1+cpu
+CUDA Version:       CUDA is not available
+GPU Memory:         
+Total GPU Memory:   Free: 0.00 GB, Allocated: 0.00 GB, Total: 0.00 GB
+GPU Count:          0
+Memory Avail:       1.80 GB / 15.74 GB (11.4%)
+Disk Space Avail:   74.40 GB / 457.28 GB (16.3%)
+===================================================
+Setting presets to: high_quality
+Setting presets to: high_quality
+
+Fitting with arguments:
+
+Fitting with arguments:
+{'enable_ensemble': True,
+ 'eval_metric': RMSE,
+ 'freq': 'B',
+ 'hyperparameters': {'AutoETS': {},
+                     'Chronos2': {},
+                     'DeepAR': {'context_length': 100,
+                                'likelihood': 'student-t',
+                                'num_layers': 3,
+                                'regression_full_covariance': True},
+                     'PatchTST': {'context_length': 252},
+                     'RecursiveTabular': {},
+                     'TemporalFusionTransformer': {'context_length': 120},
+                     'Theta': {}},
+ 'known_covariates_names': [],
+ 'num_val_windows': 1,
+ 'prediction_length': 5,
+ 'quantile_levels': [0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.95],
+ 'random_seed': 123,
+ 'refit_every_n_windows': 1,
+ 'refit_full': False,
+ 'skip_model_selection': False,
+ 'target': 'Return_1d',
+ 'time_limit': 36000,
+ 'verbosity': 2}
+
+{'enable_ensemble': True,
+ 'eval_metric': RMSE,
+ 'freq': 'B',
+ 'hyperparameters': {'AutoETS': {},
+                     'Chronos2': {},
+                     'DeepAR': {'context_length': 100,
+                                'likelihood': 'student-t',
+                                'num_layers': 3,
+                                'regression_full_covariance': True},
+                     'PatchTST': {'context_length': 252},
+                     'RecursiveTabular': {},
+                     'TemporalFusionTransformer': {'context_length': 120},
+                     'Theta': {}},
+ 'known_covariates_names': [],
+ 'num_val_windows': 1,
+ 'prediction_length': 5,
+ 'quantile_levels': [0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.95],
+ 'random_seed': 123,
+ 'refit_every_n_windows': 1,
+ 'refit_full': False,
+ 'skip_model_selection': False,
+ 'target': 'Return_1d',
+ 'time_limit': 36000,
+ 'verbosity': 2}
+
+Provided train_data has 8088 rows, 9 time series. Median time series length is 898 (min=898, max=901). 
+Provided train_data has 8088 rows, 9 time series. Median time series length is 898 (min=898, max=901). 
+
+Provided data contains following columns:
+
+Provided data contains following columns:
+	target: 'Return_1d'
+	target: 'Return_1d'
+	past_covariates:
+	past_covariates:
+		categorical:        []
+		categorical:        []
+		continuous (float): ['close', 'high', 'low', 'trade_count', 'open', 'volume', ...]
+		continuous (float): ['close', 'high', 'low', 'trade_count', 'open', 'volume', ...]
+
+To learn how to fix incorrectly inferred types, please see documentation for TimeSeriesPredictor.fit
+
+To learn how to fix incorrectly inferred types, please see documentation for TimeSeriesPredictor.fit
+
+AutoGluon will gauge predictive performance using evaluation metric: 'RMSE'
+
+AutoGluon will gauge predictive performance using evaluation metric: 'RMSE'
+	This metric's sign has been flipped to adhere to being higher_is_better. The metric score can be multiplied by -1 to get the metric value.
+	This metric's sign has been flipped to adhere to being higher_is_better. The metric score can be multiplied by -1 to get the metric value.
+===================================================
+===================================================
+
+Starting training. Start time is 2026-03-10 17:49:55
+
+Starting training. Start time is 2026-03-10 17:49:55
+Models that will be trained: ['RecursiveTabular', 'Theta', 'Chronos2', 'AutoETS', 'TemporalFusionTransformer', 'DeepAR', 'PatchTST']
+Models that will be trained: ['RecursiveTabular', 'Theta', 'Chronos2', 'AutoETS', 'TemporalFusionTransformer', 'DeepAR', 'PatchTST']
+Training timeseries model RecursiveTabular. Training for up to 5057.1s of the 36000.0s of remaining time.
+Training timeseries model RecursiveTabular. Training for up to 5057.1s of the 36000.0s of remaining time.
+	-0.0001       = Validation score (-RMSE)
+	-0.0001       = Validation score (-RMSE)
+	1.08    s     = Training runtime
+	1.08    s     = Training runtime
+	0.07    s     = Validation (prediction) runtime
+	0.07    s     = Validation (prediction) runtime
+Training timeseries model Theta. Training for up to 5899.8s of the 35998.8s of remaining time.
+Training timeseries model Theta. Training for up to 5899.8s of the 35998.8s of remaining time.
+	-0.0017       = Validation score (-RMSE)
+	-0.0017       = Validation score (-RMSE)
+	0.03    s     = Training runtime
+	0.03    s     = Training runtime
+	0.17    s     = Validation (prediction) runtime
+	0.17    s     = Validation (prediction) runtime
+Training timeseries model Chronos2. Training for up to 7079.7s of the 35998.6s of remaining time.
+Training timeseries model Chronos2. Training for up to 7079.7s of the 35998.6s of remaining time.
+	-0.0002       = Validation score (-RMSE)
+	-0.0002       = Validation score (-RMSE)
+	0.63    s     = Training runtime
+	0.63    s     = Training runtime
+	32.43   s     = Validation (prediction) runtime
+	32.43   s     = Validation (prediction) runtime
+Training timeseries model AutoETS. Training for up to 8841.4s of the 35965.5s of remaining time.
+Training timeseries model AutoETS. Training for up to 8841.4s of the 35965.5s of remaining time.
+	-0.0000       = Validation score (-RMSE)
+	-0.0000       = Validation score (-RMSE)
+	0.02    s     = Training runtime
+	0.02    s     = Training runtime
+	0.28    s     = Validation (prediction) runtime
+	0.28    s     = Validation (prediction) runtime
+Training timeseries model TemporalFusionTransformer. Training for up to 11788.4s of the 35965.2s of remaining time.
+Training timeseries model TemporalFusionTransformer. Training for up to 11788.4s of the 35965.2s of remaining time.
+Warning: path already exists! This predictor may overwrite an existing predictor! path="gluon_models"
+Warning: path already exists! This predictor may overwrite an existing predictor! path="gluon_models"
+Beginning AutoGluon training... Time limit = 36000s
+Beginning AutoGluon training... Time limit = 36000s
+Beginning AutoGluon training... Time limit = 36000s
+AutoGluon will save models to 'c:\Users\rogal\MojGithub\Stock-Market-Forecasting\autogluon_modeling\gluon_models'
+AutoGluon will save models to 'c:\Users\rogal\MojGithub\Stock-Market-Forecasting\autogluon_modeling\gluon_models'
+AutoGluon will save models to 'c:\Users\rogal\MojGithub\Stock-Market-Forecasting\autogluon_modeling\gluon_models'
+=================== System Info ===================
+AutoGluon Version:  1.5.0
+Python Version:     3.10.19
+Operating System:   Windows
+Platform Machine:   AMD64
+Platform Version:   10.0.26200
+CPU Count:          8
+Pytorch Version:    2.9.1+cpu
+CUDA Version:       CUDA is not available
+GPU Memory:         
+Total GPU Memory:   Free: 0.00 GB, Allocated: 0.00 GB, Total: 0.00 GB
+GPU Count:          0
+Memory Avail:       3.04 GB / 15.74 GB (19.3%)
+Disk Space Avail:   74.38 GB / 457.28 GB (16.3%)
+===================================================
+=================== System Info ===================
+AutoGluon Version:  1.5.0
+Python Version:     3.10.19
+Operating System:   Windows
+Platform Machine:   AMD64
+Platform Version:   10.0.26200
+CPU Count:          8
+Pytorch Version:    2.9.1+cpu
+CUDA Version:       CUDA is not available
+GPU Memory:         
+Total GPU Memory:   Free: 0.00 GB, Allocated: 0.00 GB, Total: 0.00 GB
+GPU Count:          0
+Memory Avail:       3.04 GB / 15.74 GB (19.3%)
+Disk Space Avail:   74.38 GB / 457.28 GB (16.3%)
+===================================================
+=================== System Info ===================
+AutoGluon Version:  1.5.0
+Python Version:     3.10.19
+Operating System:   Windows
+Platform Machine:   AMD64
+Platform Version:   10.0.26200
+CPU Count:          8
+Pytorch Version:    2.9.1+cpu
+CUDA Version:       CUDA is not available
+GPU Memory:         
+Total GPU Memory:   Free: 0.00 GB, Allocated: 0.00 GB, Total: 0.00 GB
+GPU Count:          0
+Memory Avail:       3.04 GB / 15.74 GB (19.3%)
+Disk Space Avail:   74.38 GB / 457.28 GB (16.3%)
+===================================================
+Setting presets to: high_quality
+Setting presets to: high_quality
+Setting presets to: high_quality
+
+Fitting with arguments:
+
+Fitting with arguments:
+
+Fitting with arguments:
+{'enable_ensemble': True,
+ 'eval_metric': RMSE,
+ 'freq': 'B',
+ 'hyperparameters': {'AutoETS': {},
+                     'Chronos2': {},
+                     'DeepAR': {'context_length': 100,
+                                'likelihood': 'student-t',
+                                'num_layers': 3,
+                                'regression_full_covariance': True},
+                     'PatchTST': {'context_length': 252},
+                     'RecursiveTabular': {},
+                     'TemporalFusionTransformer': {'context_length': 120},
+                     'Theta': {}},
+ 'known_covariates_names': [],
+ 'num_val_windows': 1,
+ 'prediction_length': 5,
+ 'quantile_levels': [0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.95],
+ 'random_seed': 123,
+ 'refit_every_n_windows': 1,
+ 'refit_full': False,
+ 'skip_model_selection': False,
+ 'target': 'Return_1d',
+ 'time_limit': 36000,
+ 'verbosity': 2}
+
+{'enable_ensemble': True,
+ 'eval_metric': RMSE,
+ 'freq': 'B',
+ 'hyperparameters': {'AutoETS': {},
+                     'Chronos2': {},
+                     'DeepAR': {'context_length': 100,
+                                'likelihood': 'student-t',
+                                'num_layers': 3,
+                                'regression_full_covariance': True},
+                     'PatchTST': {'context_length': 252},
+                     'RecursiveTabular': {},
+                     'TemporalFusionTransformer': {'context_length': 120},
+                     'Theta': {}},
+ 'known_covariates_names': [],
+ 'num_val_windows': 1,
+ 'prediction_length': 5,
+ 'quantile_levels': [0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.95],
+ 'random_seed': 123,
+ 'refit_every_n_windows': 1,
+ 'refit_full': False,
+ 'skip_model_selection': False,
+ 'target': 'Return_1d',
+ 'time_limit': 36000,
+ 'verbosity': 2}
+
+{'enable_ensemble': True,
+ 'eval_metric': RMSE,
+ 'freq': 'B',
+ 'hyperparameters': {'AutoETS': {},
+                     'Chronos2': {},
+                     'DeepAR': {'context_length': 100,
+                                'likelihood': 'student-t',
+                                'num_layers': 3,
+                                'regression_full_covariance': True},
+                     'PatchTST': {'context_length': 252},
+                     'RecursiveTabular': {},
+                     'TemporalFusionTransformer': {'context_length': 120},
+                     'Theta': {}},
+ 'known_covariates_names': [],
+ 'num_val_windows': 1,
+ 'prediction_length': 5,
+ 'quantile_levels': [0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.95],
+ 'random_seed': 123,
+ 'refit_every_n_windows': 1,
+ 'refit_full': False,
+ 'skip_model_selection': False,
+ 'target': 'Return_1d',
+ 'time_limit': 36000,
+ 'verbosity': 2}
+
+Provided train_data has 8088 rows, 9 time series. Median time series length is 898 (min=898, max=901). 
+Provided train_data has 8088 rows, 9 time series. Median time series length is 898 (min=898, max=901). 
+Provided train_data has 8088 rows, 9 time series. Median time series length is 898 (min=898, max=901). 
+
+Provided data contains following columns:
+
+Provided data contains following columns:
+
+Provided data contains following columns:
+	target: 'Return_1d'
+	target: 'Return_1d'
+	target: 'Return_1d'
+	past_covariates:
+	past_covariates:
+	past_covariates:
+		categorical:        []
+		categorical:        []
+		categorical:        []
+		continuous (float): ['close', 'high', 'low', 'trade_count', 'open', 'volume', ...]
+		continuous (float): ['close', 'high', 'low', 'trade_count', 'open', 'volume', ...]
+		continuous (float): ['close', 'high', 'low', 'trade_count', 'open', 'volume', ...]
+
+To learn how to fix incorrectly inferred types, please see documentation for TimeSeriesPredictor.fit
+
+To learn how to fix incorrectly inferred types, please see documentation for TimeSeriesPredictor.fit
+
+To learn how to fix incorrectly inferred types, please see documentation for TimeSeriesPredictor.fit
+
+AutoGluon will gauge predictive performance using evaluation metric: 'RMSE'
+
+AutoGluon will gauge predictive performance using evaluation metric: 'RMSE'
+
+AutoGluon will gauge predictive performance using evaluation metric: 'RMSE'
+	This metric's sign has been flipped to adhere to being higher_is_better. The metric score can be multiplied by -1 to get the metric value.
+	This metric's sign has been flipped to adhere to being higher_is_better. The metric score can be multiplied by -1 to get the metric value.
+	This metric's sign has been flipped to adhere to being higher_is_better. The metric score can be multiplied by -1 to get the metric value.
+===================================================
+===================================================
+===================================================
+
+Starting training. Start time is 2026-03-10 17:57:04
+
+Starting training. Start time is 2026-03-10 17:57:04
+
+Starting training. Start time is 2026-03-10 17:57:04
+Models that will be trained: ['RecursiveTabular', 'Theta', 'Chronos2', 'AutoETS', 'TemporalFusionTransformer', 'DeepAR', 'PatchTST']
+Models that will be trained: ['RecursiveTabular', 'Theta', 'Chronos2', 'AutoETS', 'TemporalFusionTransformer', 'DeepAR', 'PatchTST']
+Models that will be trained: ['RecursiveTabular', 'Theta', 'Chronos2', 'AutoETS', 'TemporalFusionTransformer', 'DeepAR', 'PatchTST']
+Training timeseries model RecursiveTabular. Training for up to 5057.1s of the 36000.0s of remaining time.
+Training timeseries model RecursiveTabular. Training for up to 5057.1s of the 36000.0s of remaining time.
+Training timeseries model RecursiveTabular. Training for up to 5057.1s of the 36000.0s of remaining time.
+	-0.0001       = Validation score (-RMSE)
+	-0.0001       = Validation score (-RMSE)
+	-0.0001       = Validation score (-RMSE)
+	1.11    s     = Training runtime
+	1.11    s     = Training runtime
+	1.11    s     = Training runtime
+	0.05    s     = Validation (prediction) runtime
+	0.05    s     = Validation (prediction) runtime
+	0.05    s     = Validation (prediction) runtime
+Training timeseries model Theta. Training for up to 5899.8s of the 35998.8s of remaining time.
+Training timeseries model Theta. Training for up to 5899.8s of the 35998.8s of remaining time.
+Training timeseries model Theta. Training for up to 5899.8s of the 35998.8s of remaining time.
+	-0.0017       = Validation score (-RMSE)
+	-0.0017       = Validation score (-RMSE)
+	-0.0017       = Validation score (-RMSE)
+	0.02    s     = Training runtime
+	0.02    s     = Training runtime
+	0.02    s     = Training runtime
+	6.30    s     = Validation (prediction) runtime
+	6.30    s     = Validation (prediction) runtime
+	6.30    s     = Validation (prediction) runtime
+Training timeseries model Chronos2. Training for up to 7078.5s of the 35992.5s of remaining time.
+Training timeseries model Chronos2. Training for up to 7078.5s of the 35992.5s of remaining time.
+Training timeseries model Chronos2. Training for up to 7078.5s of the 35992.5s of remaining time.
+	-0.0002       = Validation score (-RMSE)
+	-0.0002       = Validation score (-RMSE)
+	-0.0002       = Validation score (-RMSE)
+	0.81    s     = Training runtime
+	0.81    s     = Training runtime
+	0.81    s     = Training runtime
+	37.23   s     = Validation (prediction) runtime
+	37.23   s     = Validation (prediction) runtime
+	37.23   s     = Validation (prediction) runtime
+Training timeseries model AutoETS. Training for up to 8838.6s of the 35954.4s of remaining time.
+Training timeseries model AutoETS. Training for up to 8838.6s of the 35954.4s of remaining time.
+Training timeseries model AutoETS. Training for up to 8838.6s of the 35954.4s of remaining time.
+	-0.0000       = Validation score (-RMSE)
+	-0.0000       = Validation score (-RMSE)
+	-0.0000       = Validation score (-RMSE)
+	0.03    s     = Training runtime
+	0.03    s     = Training runtime
+	0.03    s     = Training runtime
+	0.29    s     = Validation (prediction) runtime
+	0.29    s     = Validation (prediction) runtime
+	0.29    s     = Validation (prediction) runtime
+Training timeseries model TemporalFusionTransformer. Training for up to 11784.7s of the 35954.1s of remaining time.
+Training timeseries model TemporalFusionTransformer. Training for up to 11784.7s of the 35954.1s of remaining time.
+Training timeseries model TemporalFusionTransformer. Training for up to 11784.7s of the 35954.1s of remaining time.
+	-0.0001       = Validation score (-RMSE)
+	-0.0001       = Validation score (-RMSE)
+	-0.0001       = Validation score (-RMSE)
+	479.95  s     = Training runtime
+	479.95  s     = Training runtime
+	479.95  s     = Training runtime
+	0.07    s     = Validation (prediction) runtime
+	0.07    s     = Validation (prediction) runtime
+	0.07    s     = Validation (prediction) runtime
+Training timeseries model DeepAR. Training for up to 17437.0s of the 35474.0s of remaining time.
+Training timeseries model DeepAR. Training for up to 17437.0s of the 35474.0s of remaining time.
+Training timeseries model DeepAR. Training for up to 17437.0s of the 35474.0s of remaining time.
+	-0.0001       = Validation score (-RMSE)
+	-0.0001       = Validation score (-RMSE)
+	-0.0001       = Validation score (-RMSE)
+	263.87  s     = Training runtime
+	263.87  s     = Training runtime
+	263.87  s     = Training runtime
+	0.07    s     = Validation (prediction) runtime
+	0.07    s     = Validation (prediction) runtime
+	0.07    s     = Validation (prediction) runtime
+Training timeseries model PatchTST. Training for up to 34610.0s of the 35210.0s of remaining time.
+Training timeseries model PatchTST. Training for up to 34610.0s of the 35210.0s of remaining time.
+Training timeseries model PatchTST. Training for up to 34610.0s of the 35210.0s of remaining time.
+	-0.0001       = Validation score (-RMSE)
+	-0.0001       = Validation score (-RMSE)
+	-0.0001       = Validation score (-RMSE)
+	135.37  s     = Training runtime
+	135.37  s     = Training runtime
+	135.37  s     = Training runtime
+	0.02    s     = Validation (prediction) runtime
+	0.02    s     = Validation (prediction) runtime
+	0.02    s     = Validation (prediction) runtime
+Fitting 1 ensemble(s), in 1 layers.
+Fitting 1 ensemble(s), in 1 layers.
+Fitting 1 ensemble(s), in 1 layers.
+Training ensemble model WeightedEnsemble. Training for up to 35074.5s.
+Training ensemble model WeightedEnsemble. Training for up to 35074.5s.
+Training ensemble model WeightedEnsemble. Training for up to 35074.5s.
+	Ensemble weights: {'AutoETS': 0.79, 'DeepAR': 0.1, 'PatchTST': 0.04, 'RecursiveTabular': 0.04, 'TemporalFusionTransformer': 0.03}
+	Ensemble weights: {'AutoETS': 0.79, 'DeepAR': 0.1, 'PatchTST': 0.04, 'RecursiveTabular': 0.04, 'TemporalFusionTransformer': 0.03}
+	Ensemble weights: {'AutoETS': 0.79, 'DeepAR': 0.1, 'PatchTST': 0.04, 'RecursiveTabular': 0.04, 'TemporalFusionTransformer': 0.03}
+	-0.0000       = Validation score (-RMSE)
+	-0.0000       = Validation score (-RMSE)
+	-0.0000       = Validation score (-RMSE)
+	0.42    s     = Training runtime
+	0.42    s     = Training runtime
+	0.42    s     = Training runtime
+	0.53    s     = Validation (prediction) runtime
+	0.53    s     = Validation (prediction) runtime
+	0.53    s     = Validation (prediction) runtime
+Training complete. Models trained: ['RecursiveTabular', 'Theta', 'Chronos2', 'AutoETS', 'TemporalFusionTransformer', 'DeepAR', 'PatchTST', 'WeightedEnsemble']
+Training complete. Models trained: ['RecursiveTabular', 'Theta', 'Chronos2', 'AutoETS', 'TemporalFusionTransformer', 'DeepAR', 'PatchTST', 'WeightedEnsemble']
+Training complete. Models trained: ['RecursiveTabular', 'Theta', 'Chronos2', 'AutoETS', 'TemporalFusionTransformer', 'DeepAR', 'PatchTST', 'WeightedEnsemble']
+Total runtime: 926.16 s
+Total runtime: 926.16 s
+Total runtime: 926.16 s
+Best model: WeightedEnsemble
+Best model: WeightedEnsemble
+Best model: WeightedEnsemble
+Best model score: -0.0000
+Best model score: -0.0000
+Best model score: -0.0000
+Beginning AutoGluon training... Time limit = 36000s
+AutoGluon will save models to 'c:\Users\rogal\MojGithub\Stock-Market-Forecasting\autogluon_modeling\gluon_models'
+=================== System Info ===================
+AutoGluon Version:  1.5.0
+Python Version:     3.10.19
+Operating System:   Windows
+Platform Machine:   AMD64
+Platform Version:   10.0.26200
+CPU Count:          8
+Pytorch Version:    2.9.1+cpu
+CUDA Version:       CUDA is not available
+GPU Memory:         
+Total GPU Memory:   Free: 0.00 GB, Allocated: 0.00 GB, Total: 0.00 GB
+GPU Count:          0
+Memory Avail:       4.81 GB / 15.74 GB (30.6%)
+Disk Space Avail:   73.93 GB / 457.28 GB (16.2%)
+===================================================
+Setting presets to: high_quality
+
+Fitting with arguments:
+{'enable_ensemble': True,
+ 'eval_metric': RMSE,
+ 'freq': 'B',
+ 'hyperparameters': {'AutoETS': {},
+                     'Chronos2': {},
+                     'DeepAR': {'context_length': 100,
+                                'likelihood': 'student-t',
+                                'num_layers': 3,
+                                'regression_full_covariance': True},
+                     'PatchTST': {'context_length': 252},
+                     'RecursiveTabular': {},
+                     'TemporalFusionTransformer': {'context_length': 120},
+                     'Theta': {}},
+ 'known_covariates_names': [],
+ 'num_val_windows': 1,
+ 'prediction_length': 5,
+ 'quantile_levels': [0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.95],
+ 'random_seed': 123,
+ 'refit_every_n_windows': 1,
+ 'refit_full': False,
+ 'skip_model_selection': False,
+ 'target': 'Return_1d',
+ 'time_limit': 36000,
+ 'verbosity': 2}
+
+Provided train_data has 8386 rows, 9 time series. Median time series length is 932 (min=931, max=932). 
+
+Provided data contains following columns:
+	target: 'Return_1d'
+	past_covariates:
+		categorical:        []
+		continuous (float): ['close', 'high', 'low', 'n', 'open', 'volume', ...]
+
+To learn how to fix incorrectly inferred types, please see documentation for TimeSeriesPredictor.fit
+
+AutoGluon will gauge predictive performance using evaluation metric: 'RMSE'
+	This metric's sign has been flipped to adhere to being higher_is_better. The metric score can be multiplied by -1 to get the metric value.
+===================================================
+
+Starting training. Start time is 2026-03-10 20:43:27
+Models that will be trained: ['RecursiveTabular', 'Theta', 'Chronos2', 'AutoETS', 'TemporalFusionTransformer', 'DeepAR', 'PatchTST']
+Training timeseries model RecursiveTabular. Training for up to 5056.7s of the 35997.1s of remaining time.
+	-0.0232       = Validation score (-RMSE)
+	0.87    s     = Training runtime
+	0.05    s     = Validation (prediction) runtime
+Training timeseries model Theta. Training for up to 5899.4s of the 35996.2s of remaining time.
+	-0.0151       = Validation score (-RMSE)
+	0.02    s     = Training runtime
+	5.42    s     = Validation (prediction) runtime
+Training timeseries model Chronos2. Training for up to 7078.2s of the 35990.8s of remaining time.
+	-0.0145       = Validation score (-RMSE)
+	4.52    s     = Training runtime
+	34.34   s     = Validation (prediction) runtime
+Training timeseries model AutoETS. Training for up to 8838.0s of the 35951.9s of remaining time.
+	-0.0146       = Validation score (-RMSE)
+	0.02    s     = Training runtime
+	0.34    s     = Validation (prediction) runtime
+Training timeseries model TemporalFusionTransformer. Training for up to 11783.8s of the 35951.5s of remaining time.
+	-0.0143       = Validation score (-RMSE)
+	156.88  s     = Training runtime
+	0.08    s     = Validation (prediction) runtime
+Training timeseries model DeepAR. Training for up to 17597.3s of the 35794.5s of remaining time.
+	-0.0146       = Validation score (-RMSE)
+	100.54  s     = Training runtime
+	0.06    s     = Validation (prediction) runtime
+Training timeseries model PatchTST. Training for up to 35093.9s of the 35693.9s of remaining time.
+	-0.0145       = Validation score (-RMSE)
+	44.71   s     = Training runtime
+	0.02    s     = Validation (prediction) runtime
+Fitting 1 ensemble(s), in 1 layers.
+Training ensemble model WeightedEnsemble. Training for up to 35649.1s.
+	Ensemble weights: {'AutoETS': 0.02, 'PatchTST': 0.31, 'RecursiveTabular': 0.1, 'TemporalFusionTransformer': 0.57}
+	-0.0141       = Validation score (-RMSE)
+	0.38    s     = Training runtime
+	0.50    s     = Validation (prediction) runtime
+Training complete. Models trained: ['RecursiveTabular', 'Theta', 'Chronos2', 'AutoETS', 'TemporalFusionTransformer', 'DeepAR', 'PatchTST', 'WeightedEnsemble']
+Total runtime: 349.42 s
+Best model: WeightedEnsemble
+Best model score: -0.0141
+Beginning AutoGluon training... Time limit = 36000s
+AutoGluon will save models to 'c:\Users\rogal\MojGithub\Stock-Market-Forecasting\autogluon_modeling\gluon_models'
+=================== System Info ===================
+AutoGluon Version:  1.5.0
+Python Version:     3.10.19
+Operating System:   Windows
+Platform Machine:   AMD64
+Platform Version:   10.0.26200
+CPU Count:          8
+Pytorch Version:    2.9.1+cpu
+CUDA Version:       CUDA is not available
+GPU Memory:         
+Total GPU Memory:   Free: 0.00 GB, Allocated: 0.00 GB, Total: 0.00 GB
+GPU Count:          0
+Memory Avail:       4.05 GB / 15.74 GB (25.7%)
+Disk Space Avail:   73.94 GB / 457.28 GB (16.2%)
+===================================================
+Setting presets to: high_quality
+
+Fitting with arguments:
+{'enable_ensemble': True,
+ 'eval_metric': RMSE,
+ 'freq': 'B',
+ 'hyperparameters': {'AutoETS': {},
+                     'Chronos2': {},
+                     'DeepAR': {'context_length': 100,
+                                'likelihood': 'student-t',
+                                'num_layers': 3,
+                                'regression_full_covariance': True},
+                     'PatchTST': {'context_length': 252},
+                     'RecursiveTabular': {},
+                     'TemporalFusionTransformer': {'context_length': 120},
+                     'Theta': {}},
+ 'known_covariates_names': [],
+ 'num_val_windows': 1,
+ 'prediction_length': 5,
+ 'quantile_levels': [0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.95],
+ 'random_seed': 123,
+ 'refit_every_n_windows': 1,
+ 'refit_full': False,
+ 'skip_model_selection': False,
+ 'target': 'Return_1d',
+ 'time_limit': 36000,
+ 'verbosity': 2}
+
+train_data with frequency 'IRREG' has been resampled to frequency 'B'.
+Provided train_data has 8341 rows (NaN fraction=3.9%), 9 time series. Median time series length is 927 (min=926, max=927). 
+
+Provided data contains following columns:
+	target: 'Return_1d'
+	past_covariates:
+		categorical:        []
+		continuous (float): ['close', 'high', 'low', 'n', 'open', 'volume', ...]
+
+To learn how to fix incorrectly inferred types, please see documentation for TimeSeriesPredictor.fit
+
+AutoGluon will gauge predictive performance using evaluation metric: 'RMSE'
+	This metric's sign has been flipped to adhere to being higher_is_better. The metric score can be multiplied by -1 to get the metric value.
+===================================================
+
+Starting training. Start time is 2026-03-10 21:00:42
+Models that will be trained: ['RecursiveTabular', 'Theta', 'Chronos2', 'AutoETS', 'TemporalFusionTransformer', 'DeepAR', 'PatchTST']
+Training timeseries model RecursiveTabular. Training for up to 5056.3s of the 35993.8s of remaining time.
+	-0.0211       = Validation score (-RMSE)
+	1.00    s     = Training runtime
+	0.06    s     = Validation (prediction) runtime
+Training timeseries model Theta. Training for up to 5898.8s of the 35992.8s of remaining time.
+	-0.0230       = Validation score (-RMSE)
+	0.04    s     = Training runtime
+	5.97    s     = Validation (prediction) runtime
+Training timeseries model Chronos2. Training for up to 7077.3s of the 35986.7s of remaining time.
+	-0.0229       = Validation score (-RMSE)
+	4.22    s     = Training runtime
+	37.35   s     = Validation (prediction) runtime
+Training timeseries model AutoETS. Training for up to 8836.3s of the 35945.2s of remaining time.
+	-0.0228       = Validation score (-RMSE)
+	0.04    s     = Training runtime
+	0.40    s     = Validation (prediction) runtime
+Training timeseries model TemporalFusionTransformer. Training for up to 11781.6s of the 35944.7s of remaining time.
+	-0.0226       = Validation score (-RMSE)
+	243.20  s     = Training runtime
+	0.13    s     = Validation (prediction) runtime
+Training timeseries model DeepAR. Training for up to 17550.7s of the 35701.4s of remaining time.
+	-0.0239       = Validation score (-RMSE)
+	270.94  s     = Training runtime
+	0.07    s     = Validation (prediction) runtime
+Training timeseries model PatchTST. Training for up to 34830.3s of the 35430.3s of remaining time.
+	-0.0224       = Validation score (-RMSE)
+	52.11   s     = Training runtime
+	0.02    s     = Validation (prediction) runtime
+Fitting 1 ensemble(s), in 1 layers.
+Training ensemble model WeightedEnsemble. Training for up to 35378.1s.
+	Ensemble weights: {'DeepAR': 0.25, 'PatchTST': 0.02, 'RecursiveTabular': 0.69, 'TemporalFusionTransformer': 0.04}
+	-0.0206       = Validation score (-RMSE)
+	0.38    s     = Training runtime
+	0.28    s     = Validation (prediction) runtime
+Training complete. Models trained: ['RecursiveTabular', 'Theta', 'Chronos2', 'AutoETS', 'TemporalFusionTransformer', 'DeepAR', 'PatchTST', 'WeightedEnsemble']
+Total runtime: 616.81 s
+Best model: WeightedEnsemble
+Best model score: -0.0206
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+Loading predictor from path c:\Users\rogal\MojGithub\Stock-Market-Forecasting\autogluon_modeling\gluon_models
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+Beginning AutoGluon training... Time limit = 36000s
+AutoGluon will save models to 'c:\Users\rogal\MojGithub\Stock-Market-Forecasting\autogluon_modeling\gluon_models'
+=================== System Info ===================
+AutoGluon Version:  1.5.0
+Python Version:     3.10.19
+Operating System:   Windows
+Platform Machine:   AMD64
+Platform Version:   10.0.26200
+CPU Count:          8
+Pytorch Version:    2.9.1+cpu
+CUDA Version:       CUDA is not available
+GPU Memory:         
+Total GPU Memory:   Free: 0.00 GB, Allocated: 0.00 GB, Total: 0.00 GB
+GPU Count:          0
+Memory Avail:       4.44 GB / 15.74 GB (28.2%)
+Disk Space Avail:   73.87 GB / 457.28 GB (16.2%)
+===================================================
+Setting presets to: high_quality
+
+Fitting with arguments:
+{'enable_ensemble': True,
+ 'eval_metric': RMSE,
+ 'freq': 'B',
+ 'hyperparameters': {'AutoETS': {},
+                     'Chronos2': {},
+                     'DeepAR': {'context_length': 100,
+                                'likelihood': 'student-t',
+                                'num_layers': 3,
+                                'regression_full_covariance': True},
+                     'PatchTST': {'context_length': 252},
+                     'RecursiveTabular': {},
+                     'TemporalFusionTransformer': {'context_length': 120},
+                     'Theta': {}},
+ 'known_covariates_names': [],
+ 'num_val_windows': 1,
+ 'prediction_length': 5,
+ 'quantile_levels': [0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.95],
+ 'random_seed': 123,
+ 'refit_every_n_windows': 1,
+ 'refit_full': False,
+ 'skip_model_selection': False,
+ 'target': 'Return_1d',
+ 'time_limit': 36000,
+ 'verbosity': 2}
+
+train_data with frequency 'IRREG' has been resampled to frequency 'B'.
+Provided train_data has 6390 rows (NaN fraction=3.8%), 9 time series. Median time series length is 710 (min=710, max=710). 
+
+Provided data contains following columns:
+	target: 'Return_1d'
+	past_covariates:
+		categorical:        []
+		continuous (float): ['close', 'high', 'low', 'n', 'open', 'volume', ...]
+
+To learn how to fix incorrectly inferred types, please see documentation for TimeSeriesPredictor.fit
+
+AutoGluon will gauge predictive performance using evaluation metric: 'RMSE'
+	This metric's sign has been flipped to adhere to being higher_is_better. The metric score can be multiplied by -1 to get the metric value.
+===================================================
+
+Starting training. Start time is 2026-03-10 21:54:18
+Models that will be trained: ['RecursiveTabular', 'Theta', 'Chronos2', 'AutoETS', 'TemporalFusionTransformer', 'DeepAR', 'PatchTST']
+Training timeseries model RecursiveTabular. Training for up to 5056.4s of the 35994.6s of remaining time.
+	-0.0225       = Validation score (-RMSE)
+	0.80    s     = Training runtime
+	0.06    s     = Validation (prediction) runtime
+Training timeseries model Theta. Training for up to 5899.0s of the 35993.7s of remaining time.
+	-0.0230       = Validation score (-RMSE)
+	0.03    s     = Training runtime
+	5.15    s     = Validation (prediction) runtime
+Training timeseries model Chronos2. Training for up to 7077.7s of the 35988.5s of remaining time.
+	-0.0226       = Validation score (-RMSE)
+	3.52    s     = Training runtime
+	25.84   s     = Validation (prediction) runtime
+Training timeseries model AutoETS. Training for up to 8839.8s of the 35959.2s of remaining time.
+	-0.0229       = Validation score (-RMSE)
+	0.02    s     = Training runtime
+	0.31    s     = Validation (prediction) runtime
+Training timeseries model TemporalFusionTransformer. Training for up to 11786.3s of the 35958.8s of remaining time.
+	-0.0227       = Validation score (-RMSE)
+	173.17  s     = Training runtime
+	0.08    s     = Validation (prediction) runtime
+Training timeseries model DeepAR. Training for up to 17592.8s of the 35785.6s of remaining time.
+	-0.0232       = Validation score (-RMSE)
+	249.31  s     = Training runtime
+	0.07    s     = Validation (prediction) runtime
+Training timeseries model PatchTST. Training for up to 34936.2s of the 35536.2s of remaining time.
+	-0.0222       = Validation score (-RMSE)
+	48.51   s     = Training runtime
+	0.00    s     = Validation (prediction) runtime
+Fitting 1 ensemble(s), in 1 layers.
+Training ensemble model WeightedEnsemble. Training for up to 35487.5s.
+	Ensemble weights: {'DeepAR': 0.25, 'PatchTST': 0.33, 'RecursiveTabular': 0.42}
+	-0.0217       = Validation score (-RMSE)
+	0.31    s     = Training runtime
+	0.13    s     = Validation (prediction) runtime
+Training complete. Models trained: ['RecursiveTabular', 'Theta', 'Chronos2', 'AutoETS', 'TemporalFusionTransformer', 'DeepAR', 'PatchTST', 'WeightedEnsemble']
+Total runtime: 507.96 s
+Best model: WeightedEnsemble
+Best model score: -0.0217
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+Beginning AutoGluon training... Time limit = 36000s
+AutoGluon will save models to 'c:\Users\rogal\MojGithub\Stock-Market-Forecasting\autogluon_modeling\gluon_models'
+=================== System Info ===================
+AutoGluon Version:  1.5.0
+Python Version:     3.10.19
+Operating System:   Windows
+Platform Machine:   AMD64
+Platform Version:   10.0.26200
+CPU Count:          8
+Pytorch Version:    2.9.1+cpu
+CUDA Version:       CUDA is not available
+GPU Memory:         
+Total GPU Memory:   Free: 0.00 GB, Allocated: 0.00 GB, Total: 0.00 GB
+GPU Count:          0
+Memory Avail:       4.47 GB / 15.74 GB (28.4%)
+Disk Space Avail:   73.71 GB / 457.28 GB (16.1%)
+===================================================
+Setting presets to: high_quality
+
+Fitting with arguments:
+{'enable_ensemble': True,
+ 'eval_metric': RMSE,
+ 'freq': 'B',
+ 'hyperparameters': {'AutoETS': {},
+                     'Chronos2': {},
+                     'DeepAR': {'context_length': 100,
+                                'likelihood': 'student-t',
+                                'num_layers': 3,
+                                'regression_full_covariance': True},
+                     'PatchTST': {'context_length': 252},
+                     'RecursiveTabular': {},
+                     'TemporalFusionTransformer': {'context_length': 120},
+                     'Theta': {}},
+ 'known_covariates_names': [],
+ 'num_val_windows': 1,
+ 'prediction_length': 5,
+ 'quantile_levels': [0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.95],
+ 'random_seed': 123,
+ 'refit_every_n_windows': 1,
+ 'refit_full': False,
+ 'skip_model_selection': False,
+ 'target': 'Return_1d',
+ 'time_limit': 36000,
+ 'verbosity': 2}
+
+train_data with frequency 'IRREG' has been resampled to frequency 'B'.
+Provided train_data has 6390 rows (NaN fraction=3.8%), 9 time series. Median time series length is 710 (min=710, max=710). 
+
+Provided data contains following columns:
+	target: 'Return_1d'
+	past_covariates:
+		categorical:        []
+		continuous (float): ['close', 'high', 'low', 'n', 'open', 'volume', ...]
+
+To learn how to fix incorrectly inferred types, please see documentation for TimeSeriesPredictor.fit
+
+AutoGluon will gauge predictive performance using evaluation metric: 'RMSE'
+	This metric's sign has been flipped to adhere to being higher_is_better. The metric score can be multiplied by -1 to get the metric value.
+===================================================
+
+Starting training. Start time is 2026-03-10 22:09:05
+Models that will be trained: ['RecursiveTabular', 'Theta', 'Chronos2', 'AutoETS', 'TemporalFusionTransformer', 'DeepAR', 'PatchTST']
+Training timeseries model RecursiveTabular. Training for up to 5056.3s of the 35993.9s of remaining time.
+	-0.0225       = Validation score (-RMSE)
+	0.90    s     = Training runtime
+	0.06    s     = Validation (prediction) runtime
+Training timeseries model Theta. Training for up to 5898.8s of the 35993.0s of remaining time.
+	-0.0230       = Validation score (-RMSE)
+	0.03    s     = Training runtime
+	5.25    s     = Validation (prediction) runtime
+Training timeseries model Chronos2. Training for up to 7077.5s of the 35987.7s of remaining time.
+	-0.0226       = Validation score (-RMSE)
+	4.29    s     = Training runtime
+	27.44   s     = Validation (prediction) runtime
+Training timeseries model AutoETS. Training for up to 8839.0s of the 35955.9s of remaining time.
+	-0.0229       = Validation score (-RMSE)
+	0.03    s     = Training runtime
+	0.33    s     = Validation (prediction) runtime
+Training timeseries model TemporalFusionTransformer. Training for up to 11785.2s of the 35955.6s of remaining time.
+	-0.0227       = Validation score (-RMSE)
+	174.33  s     = Training runtime
+	0.07    s     = Validation (prediction) runtime
+Training timeseries model DeepAR. Training for up to 17590.6s of the 35781.1s of remaining time.
+	-0.0232       = Validation score (-RMSE)
+	245.13  s     = Training runtime
+	0.07    s     = Validation (prediction) runtime
+Training timeseries model PatchTST. Training for up to 34935.9s of the 35535.9s of remaining time.
+	-0.0222       = Validation score (-RMSE)
+	49.80   s     = Training runtime
+	0.02    s     = Validation (prediction) runtime
+Fitting 1 ensemble(s), in 1 layers.
+Training ensemble model WeightedEnsemble. Training for up to 35486.0s.
+	Ensemble weights: {'DeepAR': 0.25, 'PatchTST': 0.33, 'RecursiveTabular': 0.42}
+	-0.0217       = Validation score (-RMSE)
+	0.36    s     = Training runtime
+	0.15    s     = Validation (prediction) runtime
+Training complete. Models trained: ['RecursiveTabular', 'Theta', 'Chronos2', 'AutoETS', 'TemporalFusionTransformer', 'DeepAR', 'PatchTST', 'WeightedEnsemble']
+Total runtime: 508.92 s
+Best model: WeightedEnsemble
+Best model score: -0.0217
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+Beginning AutoGluon training... Time limit = 36000s
+AutoGluon will save models to 'c:\Users\rogal\MojGithub\Stock-Market-Forecasting\autogluon_modeling\gluon_models'
+=================== System Info ===================
+AutoGluon Version:  1.5.0
+Python Version:     3.10.19
+Operating System:   Windows
+Platform Machine:   AMD64
+Platform Version:   10.0.26200
+CPU Count:          8
+Pytorch Version:    2.9.1+cpu
+CUDA Version:       CUDA is not available
+GPU Memory:         
+Total GPU Memory:   Free: 0.00 GB, Allocated: 0.00 GB, Total: 0.00 GB
+GPU Count:          0
+Memory Avail:       2.95 GB / 15.74 GB (18.7%)
+Disk Space Avail:   74.89 GB / 457.28 GB (16.4%)
+===================================================
+Setting presets to: high_quality
+
+Fitting with arguments:
+{'enable_ensemble': True,
+ 'eval_metric': RMSE,
+ 'freq': 'B',
+ 'hyperparameters': {'AutoETS': {},
+                     'Chronos2': {},
+                     'DeepAR': {'context_length': 100,
+                                'likelihood': 'student-t',
+                                'num_layers': 3,
+                                'regression_full_covariance': True},
+                     'PatchTST': {'context_length': 252},
+                     'RecursiveTabular': {},
+                     'TemporalFusionTransformer': {'context_length': 120},
+                     'Theta': {}},
+ 'known_covariates_names': [],
+ 'num_val_windows': 1,
+ 'prediction_length': 5,
+ 'quantile_levels': [0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.95],
+ 'random_seed': 123,
+ 'refit_every_n_windows': 1,
+ 'refit_full': False,
+ 'skip_model_selection': False,
+ 'target': 'Return_1d',
+ 'time_limit': 36000,
+ 'verbosity': 2}
+
+train_data with frequency 'IRREG' has been resampled to frequency 'B'.
+Provided train_data has 6390 rows (NaN fraction=3.8%), 9 time series. Median time series length is 710 (min=710, max=710). 
+
+Provided data contains following columns:
+	target: 'Return_1d'
+	past_covariates:
+		categorical:        []
+		continuous (float): ['close', 'high', 'low', 'n', 'open', 'volume', ...]
+
+To learn how to fix incorrectly inferred types, please see documentation for TimeSeriesPredictor.fit
+
+AutoGluon will gauge predictive performance using evaluation metric: 'RMSE'
+	This metric's sign has been flipped to adhere to being higher_is_better. The metric score can be multiplied by -1 to get the metric value.
+===================================================
+
+Starting training. Start time is 2026-03-11 13:25:41
+Models that will be trained: ['RecursiveTabular', 'Theta', 'Chronos2', 'AutoETS', 'TemporalFusionTransformer', 'DeepAR', 'PatchTST']
+Training timeseries model RecursiveTabular. Training for up to 5056.1s of the 35992.4s of remaining time.
+	-0.0227       = Validation score (-RMSE)
+	1.06    s     = Training runtime
+	0.10    s     = Validation (prediction) runtime
+Training timeseries model Theta. Training for up to 5898.5s of the 35991.2s of remaining time.
+	-0.0230       = Validation score (-RMSE)
+	0.03    s     = Training runtime
+	6.23    s     = Validation (prediction) runtime
+Training timeseries model Chronos2. Training for up to 7077.0s of the 35985.0s of remaining time.
+	-0.0226       = Validation score (-RMSE)
+	4.93    s     = Training runtime
+	29.77   s     = Validation (prediction) runtime
+Training timeseries model AutoETS. Training for up to 8837.6s of the 35950.2s of remaining time.
+	-0.0230       = Validation score (-RMSE)
+	0.02    s     = Training runtime
+	0.33    s     = Validation (prediction) runtime
+Training timeseries model TemporalFusionTransformer. Training for up to 11783.3s of the 35949.9s of remaining time.
+	-0.0226       = Validation score (-RMSE)
+	213.12  s     = Training runtime
+	0.08    s     = Validation (prediction) runtime
+Training timeseries model DeepAR. Training for up to 17568.3s of the 35736.6s of remaining time.
+	-0.0244       = Validation score (-RMSE)
+	282.59  s     = Training runtime
+	0.08    s     = Validation (prediction) runtime
+Training timeseries model PatchTST. Training for up to 34854.0s of the 35454.0s of remaining time.
+	-0.0224       = Validation score (-RMSE)
+	54.13   s     = Training runtime
+	0.02    s     = Validation (prediction) runtime
+Fitting 1 ensemble(s), in 1 layers.
+Training ensemble model WeightedEnsemble. Training for up to 35399.7s.
+	Ensemble weights: {'DeepAR': 0.24, 'PatchTST': 0.03, 'RecursiveTabular': 0.45, 'TemporalFusionTransformer': 0.28}
+	-0.0218       = Validation score (-RMSE)
+	0.31    s     = Training runtime
+	0.27    s     = Validation (prediction) runtime
+Training complete. Models trained: ['RecursiveTabular', 'Theta', 'Chronos2', 'AutoETS', 'TemporalFusionTransformer', 'DeepAR', 'PatchTST', 'WeightedEnsemble']
+Total runtime: 593.96 s
+Best model: WeightedEnsemble
+Best model score: -0.0218
+Loading predictor from path c:\Users\rogal\MojGithub\Stock-Market-Forecasting\autogluon_modeling\gluon_models
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+data with frequency 'IRREG' has been resampled to frequency 'B'.
+Model not specified in predict, will default to the model with the best validation score: WeightedEnsemble

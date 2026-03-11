@@ -5,6 +5,7 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'trading/css/trading.css' %}"/>
+<link rel="stylesheet" href="{% static 'trading/css/forecast.css' %}"/>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 {% endblock %}
 
@@ -187,6 +188,96 @@
 
 </div>
 
+<!-- Forecast--------------------------------------------------------------------------- -->
+
+<!-- MIDDLE DIVIDER -->
+<div class="section-divider divider-middle">
+  
+</div>
+
+<!-- FORECAST LAYOUT -->
+<div class="trade-layout forecast-layout">
+
+  <!-- LEFT: forecast chart -->
+  <div class="trade-main">
+
+    <div class="forecast-heading">
+      <div class="forecast-heading-title">5 Day Return Forecast</div>
+      <div class="forecast-heading-sub">{{company}} daily return forecast</div>
+    </div>
+
+    <div class="trade-chart-wrap forecast-chart-wrap">
+      <div class="trade-chart-loading" id="fc-loading"><div class="spinner"></div></div>
+      <div class="fc-error" id="fc-error"></div>
+      <canvas id="forecastChart"></canvas>
+    </div>
+
+  </div>
+
+  <!-- RIGHT: Return Threshold panel -->
+  <div class="trade-sidebar">
+    <div class="order-panel sl-panel-full">
+
+      <div class="order-tabs-full">
+        <button class="order-tab active">Return Threshold</button>
+      </div>
+
+      <div class="order-body">
+
+        <div class="order-row">
+          <span class="order-label">Threshold</span>
+          <span class="order-value" id="sl-value" style="color:#e05555;">-5.00%</span>
+        </div>
+
+        <div class="sl-slider-block">
+          <input type="range" id="sl-slider" class="sl-slider"
+                 min="-0.10" max="0.00" step="0.001" value="-0.05"/>
+          <div class="sl-range-labels">
+            <span>-10%</span><span>-5%</span><span>0%</span>
+          </div>
+        </div>
+
+        <button class="btn-order buy sl-apply-btn" id="sl-apply">
+          Apply
+        </button>
+
+      </div>
+  </div>
+<div class="ml-info">
+  <p>Predictions powered by ML</p>
+  <a href="{% url 'ml_models' %}" class="btn-order">
+    Check Models
+  </a>
+</div>
+
+  
+</div>
+
+</div>
+
+<!-- QUANTILE ANALYSIS TABLE -->
+<div class="risk-section" id="risk-section">
+  <div class="risk-section-header">
+    <span class="risk-section-title">Risk Analysis</span>
+    <span class="risk-section-sub">5-day forward return distribution </span>
+  </div>
+  <table class="risk-table" id="risk-table">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Q(0.05)</th>
+        <th>Q(0.10)</th>
+        <th>Q(0.30)</th>
+        <th>Median</th>
+        <th>Threshold Range</th>
+        <th>Risk</th>
+      </tr>
+    </thead>
+    <tbody id="risk-tbody"></tbody>
+  </table>
+</div>
+
+
 {% endblock %}
 
 {% block extra_js %}
@@ -196,5 +287,6 @@
   const HAS_POS  = {{ position|yesno:"true,false" }};
   const CSRF     = "{{ csrf_token }}";
 </script>
+
 <script src="{% static 'trading/js/trading_page.js' %}"></script>
 {% endblock %}

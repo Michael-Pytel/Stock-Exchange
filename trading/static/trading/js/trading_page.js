@@ -250,3 +250,285 @@ if (overlay) {
 
 /* ─── INIT ────────────────────────────────────────────────── */
 loadStock(SYMBOL, currentTf);
+
+/* ═══════════════════════════════════════════════════════════════
+   FORECAST — zastąp cały poprzedni blok forecast w trading_page.js
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ─── STATE ───────────────────────────────────────────────── */
+let fcChart       = null;
+let fcData        = null;
+let fcStopLoss    = -0.05;
+
+/* ─── HELPERS ─────────────────────────────────────────────── */
+function fmtPct(v) {
+  return (v >= 0 ? '+' : '') + (v * 100).toFixed(2) + '%';
+}
+
+function getRisk(stopLoss, d) {
+  if      (stopLoss >= d.q03)  return { label: 'HIGH RISK', cls: 'risk-high', range: `above Q(0.30)`         };
+  else if (stopLoss >= d.q01)  return { label: 'MONITOR',   cls: 'risk-mid',  range: `Q(0.10) – Q(0.30)`    };
+  else if (stopLoss >= d.q005) return { label: 'LOW RISK',  cls: 'risk-low',  range: `Q(0.05) – Q(0.10)`    };
+  else                          return { label: 'VERY LOW',  cls: 'risk-vlow', range: `below Q(0.05)`         };
+}
+
+/* ─── SLIDER ──────────────────────────────────────────────── */
+const slSlider = document.getElementById('sl-slider');
+const slValue  = document.getElementById('sl-value');
+const slApply  = document.getElementById('sl-apply');
+
+// Init display on load
+slValue.textContent = fmtPct(parseFloat(slSlider.value));
+
+slSlider.addEventListener('input', () => {
+  const v = parseFloat(slSlider.value);
+  slValue.textContent = fmtPct(v);
+  slValue.style.color = v > -0.03 ? '#f0a030' : '#e05555';
+});
+
+slApply.addEventListener('click', () => {
+  fcStopLoss = parseFloat(slSlider.value);
+  if (fcData) drawForecast(fcData, fcStopLoss);
+});
+
+/* ─── LOAD ────────────────────────────────────────────────── */
+async function loadForecast(symbol) {
+  const loading = document.getElementById('fc-loading');
+  const errBox  = document.getElementById('fc-error');
+  const riskSec = document.getElementById('risk-section');
+
+  loading.classList.add('visible');
+  errBox.style.display = 'none';
+  riskSec.classList.remove('visible');
+  if (fcChart) { fcChart.destroy(); fcChart = null; }
+
+  try {
+    const resp = await fetch(`/forecast/${symbol}/`);
+    const data = await resp.json();
+    if (data.error) throw new Error(data.error);
+
+    fcData = data;
+    drawForecast(data, fcStopLoss);
+    riskSec.classList.add('visible');
+
+  } catch(e) {
+    errBox.textContent   = '⚠ Could not load forecast: ' + e.message;
+    errBox.style.display = 'block';
+  } finally {
+    loading.classList.remove('visible');
+  }
+}
+
+/* ─── DRAW ────────────────────────────────────────────────── */
+function drawForecast(data, stopLoss) {
+  const { history, forecast, last_val } = data;
+
+  const histLabels = history.map(d => d.date);
+  const fcLabels   = forecast.map(d => d.date);
+  const allLabels  = [...histLabels, ...fcLabels];
+  const splitIdx   = histLabels.length;
+  const pad        = [...Array(splitIdx - 1).fill(null)];
+
+  const histData   = [...history.map(d => d.value), ...Array(fcLabels.length).fill(null)];
+  const medianData = [...pad, last_val, ...forecast.map(d => d.median)];
+  const q09Data    = [...pad, last_val, ...forecast.map(d => d.q09)];
+  const q01Data    = [...pad, last_val, ...forecast.map(d => d.q01)];
+  const q095Data   = [...pad, last_val, ...forecast.map(d => d.q095)];
+  const q005Data   = [...pad, last_val, ...forecast.map(d => d.q005)];
+  const slData     = allLabels.map(() => stopLoss);
+
+  const histColor = '#808080';
+  const fcCtx     = document.getElementById('forecastChart').getContext('2d');
+  const histGrad  = fcCtx.createLinearGradient(0, 0, 0, 0);
+  histGrad.addColorStop(0, '#4a9e6b20');
+  histGrad.addColorStop(1, '#4a9e6b00');
+
+  if (fcChart) fcChart.destroy();
+
+  fcChart = new Chart(fcCtx, {
+    type: 'line',
+    data: {
+      labels: allLabels,
+      datasets: [
+        // Q 5–95% outer band (orange)
+        {
+          label: 'Q 5–95%',
+          data: q095Data,
+          borderColor: 'transparent',
+          backgroundColor: 'rgba(240,160,48,0.10)',
+          fill: '+1',
+          pointRadius: 0,
+          tension: 0.35,
+          order: 5,
+        },
+        {
+          label: 'Q 5–95% low',
+          data: q005Data,
+          borderColor: 'transparent',
+          borderWidth: 1,
+          borderDash: [3, 3],
+          fill: false,
+          pointRadius: 0,
+          tension: 0.35,
+          order: 5,
+        },
+        // Q 10–90% inner band (blue)
+        {
+          label: 'Q 10–90%',
+          data: q09Data,
+          borderColor: 'transparent',
+          backgroundColor: 'rgba(224,85,85,0.15)',
+          fill: '+1',
+          pointRadius: 0,
+          tension: 0.35,
+          order: 4,
+        },
+        {
+          label: 'Q 10–90% low',
+          data: q01Data,
+          borderColor: 'transparent',
+          borderWidth: 1,
+          borderDash: [3, 3],
+          fill: false,
+          pointRadius: 0,
+          tension: 0.35,
+          order: 4,
+        },
+        // History
+        {
+          label: 'History',
+          data: histData,
+          borderColor: histColor,
+          borderWidth: 1.5,
+          backgroundColor: histGrad,
+          fill: true,
+          pointRadius: 0,
+          pointHoverRadius: 4,
+          pointHoverBackgroundColor: histColor,
+          tension: 0.38,
+          order: 2,
+        },
+        // Median
+        {
+          label: 'Forecast Median',
+          data: medianData,
+          borderColor: 'rgba(184, 224, 54, 0.6)',
+          borderWidth: 1.5,
+          fill: false,
+          pointRadius: 0,
+          pointHoverRadius: 5,
+          pointHoverBackgroundColor: '#b8e036',
+          tension: 0.35,
+          order: 1,
+        },
+        // Return Threshold
+        {
+          label: 'Return Threshold',
+          data: slData,
+          borderColor: 'rgba(224,85,85,0.75)',
+          borderWidth: 1.2,
+          borderDash: [6, 4],
+          fill: false,
+          pointRadius: 0,
+          tension: 0,
+          order: 3,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: {
+          display: true,
+          position: 'top',
+          labels: {
+            color: '#555',
+            font: { family: 'IBM Plex Mono', size: 11 },
+            boxWidth: 14,
+            padding: 16,
+            // Show only the "top" dataset of each band pair, hide the low borders
+            filter: item => !item.text.endsWith('low'),
+          },
+        },
+        tooltip: {
+          backgroundColor: '#111',
+          titleColor: 'rgba(255,255,255,0.45)',
+          bodyColor: '#fff',
+          borderColor: 'rgba(255,255,255,0.07)',
+          borderWidth: 1,
+          padding: 12,
+          titleFont: { family: 'IBM Plex Sans', size: 11 },
+          bodyFont:  { family: 'IBM Plex Mono', size: 13 },
+          callbacks: {
+            // Only show: Median, Q5-95% top, Q5-95% low, Q10-90% top, Q10-90% low
+            // i.e. the 4 quantile lines + median. Hide History, Threshold, fill datasets.
+            label: c => {
+              const name = c.dataset.label;
+              const v    = c.parsed.y;
+              if (v === null) return null;
+
+              if (name === 'Median')        return ` Median:    ${fmtPct(v)}`;
+              if (name === 'Q 10–90%')      return ` Q(0.90):   ${fmtPct(v)}`;
+              if (name === 'Q 10–90% low')  return ` Q(0.10):   ${fmtPct(v)}`;
+              if (name === 'Q 5–95%')       return ` Q(0.95):   ${fmtPct(v)}`;
+              if (name === 'Q 5–95% low')   return ` Q(0.05):   ${fmtPct(v)}`;
+              return null;   // hide History, Return Threshold
+            },
+            // Custom ordering: Median first, then quantiles
+            afterBody: () => null,
+          },
+        },
+      },
+      scales: {
+        x: {
+          grid: { color: 'rgba(255,255,255,0.04)', drawTicks: false },
+          ticks: {
+            color: '#444',
+            font: { family: 'IBM Plex Mono', size: 11 },
+            maxTicksLimit: 10,
+            maxRotation: 0,
+          },
+        },
+        y: {
+          position: 'left',
+          title: {
+            display: true,
+            text: 'Return 1 Day',
+            color: '#444',
+            font: { family: 'IBM Plex Mono', size: 11 },
+          },
+          grid: { color: 'rgba(255,255,255,0.04)', drawTicks: false },
+          ticks: {
+            color: '#444',
+            font: { family: 'IBM Plex Mono', size: 11 },
+            callback: v => fmtPct(v),
+          },
+        },
+      },
+    },
+  });
+
+  buildRiskTable(forecast, stopLoss);
+}
+
+/* ─── RISK TABLE ──────────────────────────────────────────── */
+function buildRiskTable(forecast, stopLoss) {
+  const tbody = document.getElementById('risk-tbody');
+  tbody.innerHTML = forecast.map(d => {
+    const { label, cls, range } = getRisk(stopLoss, d);
+    return `<tr>
+      <td>${d.date}</td>
+      <td>${fmtPct(d.q005)}</td>
+      <td>${fmtPct(d.q01)}</td>
+      <td>${fmtPct(d.q03)}</td>
+      <td>${fmtPct(d.median)}</td>
+      <td class="q-range">${range}</td>
+      <td class="${cls}">${label}</td>
+    </tr>`;
+  }).join('');
+}
+
+/* ─── INIT ────────────────────────────────────────────────── */
+loadForecast(SYMBOL);

@@ -1,0 +1,250 @@
+/* ═══════════════════════════════════════════════════════════════
+   forecast.css → static/trading/css/forecast.css
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Section dividers ────────────────────────────────────────── */
+.section-divider {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 24px;
+}
+S
+.section-divider::before,
+.section-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(184,224,54,0.4), transparent);
+}
+
+
+
+.divider-top    { margin: 0 0 0px; }
+.divider-middle { margin: 0px 0 0; }
+
+/* ── Forecast layout ─────────────────────────────────────────── */
+.forecast-layout {
+min-height: auto;
+  margin-top: 1px;
+  padding-top: 10px;
+}
+
+/* ── Heading ─────────────────────────────────────────────────── */
+.forecast-heading        { margin-bottom: 16px; }
+
+.forecast-heading-title {
+ font-family: var(--ff-display);
+  font-size: 2rem;
+  font-weight: 500;
+  color: var(--white);
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.forecast-heading-sub {
+  font-size: 13px;
+  color: #3a3a3a;
+  font-family: 'IBM Plex Mono', monospace;
+  margin-top: 4px;
+}
+
+/* ── Taller forecast chart ───────────────────────────────────── */
+.forecast-chart-wrap {
+  height: 440px !important;
+}
+
+/* ── Return Threshold panel ──────────────────────────────────── */
+.sl-panel-full               { width: 100%; box-sizing: border-box; }
+.sl-panel-full .order-tabs   { width: 100%; }
+.sl-panel-full .order-tab    { width: 100%; text-align: center; cursor: default; }
+
+.sl-slider-block { margin: 20px 0 24px; }
+
+.sl-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 5px;
+  border-radius: 4px;
+  background: linear-gradient(to right, #e05555 0%, #e0a030 50%, #555 100%);
+  outline: none;
+  cursor: pointer;
+  display: block;
+}
+
+.sl-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2.5px solid #e05555;
+  box-shadow: 0 0 0 3px rgba(224,85,85,.2);
+  cursor: pointer;
+  transition: box-shadow .15s;
+}
+
+.sl-slider::-webkit-slider-thumb:hover {
+  box-shadow: 0 0 0 6px rgba(224,85,85,.2);
+}
+
+.sl-range-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: #444;
+  font-family: 'IBM Plex Mono', monospace;
+  margin-top: 6px;
+}
+
+.sl-apply-btn {
+  width: 100%;
+  background: #111 !important;
+  border: 1px solid #222 !important;
+  color: #888 !important;
+  transition: border-color .15s, color .15s !important;
+}
+
+.sl-apply-btn:hover {
+  border-color: #e05555 !important;
+  color: #e05555 !important;
+}
+
+/* ── Forecast error ──────────────────────────────────────────── */
+.fc-error {
+  display: none;
+  padding: 12px 16px;
+  background: rgba(224,85,85,.08);
+  border: 1px solid rgba(224,85,85,.2);
+  border-radius: 8px;
+  color: #e05555;
+  font-size: 13px;
+  font-family: 'IBM Plex Mono', monospace;
+  margin-bottom: 12px;
+}
+
+/* ── Quantile Analysis section ───────────────────────────────── */
+.risk-section {
+  margin-top: 0px;
+  padding: 0px 48px;
+  padding-bottom: 40px;
+  display: none;
+}
+
+.risk-section.visible { display: block; }
+
+.risk-section-header {
+  display: flex;
+  margin-top: 0px;
+  align-items: baseline;
+  gap: 16px;
+  margin-bottom: 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #1a1a1a;
+}
+
+.risk-section-title {
+  font-family: var(--ff-display);
+  font-size: 1.6rem;
+  font-weight: 100;
+  color: var(--white);
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.risk-section-sub {
+  font-family: var(--ff-body);
+  font-size: 0.82rem;
+  font-weight: 300;
+  color: rgba(255,255,255,0.35);
+  margin-top: 6px;
+}
+
+/* ── Risk table ──────────────────────────────────────────────── */
+.risk-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+}
+
+.risk-table thead th {
+  text-align: left;
+  padding: 10px 14px;
+  background: #0d0d0d;
+  border-bottom: 1px solid #222;
+  color: #666;
+  font-weight: 600;
+  letter-spacing: .04em;
+}
+
+.risk-table tbody td {
+  padding: 10px 14px;
+  border-bottom: 1px solid #161616;
+  color: #888;
+}
+
+.risk-table tbody tr:hover td { background: #0a0a0a; }
+
+.risk-high { color: #e05555 !important; font-weight: 700; }
+.risk-mid  { color: #f0a030 !important; font-weight: 700; }
+.risk-low  { color: #6ee7b7 !important; font-weight: 700; }
+.risk-vlow { color: #555    !important; }
+
+.risk-table td.q-range {
+  color: #444;
+  font-size: 11px;
+}
+
+.order-tabs-full {
+  display: grid;
+  grid-template-columns: 1fr; /* jedna kolumna = 100% szerokości */
+  border-bottom: 1px solid var(--border);
+}
+
+.order-tabs-full .order-tab {
+  width: 100%;
+}
+
+.order-tabs-full .order-tab:first-child {
+  border-right: none;
+}
+
+
+/* ── ML Info Panel ───────────────────────────────────────────── */
+.ml-info {
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 100px;
+  padding: 16px;
+  text-align: center;
+  background: #111;           /* ciemne tło jak w panelu slidera */
+  border: 1px solid #222;    /* ramka podobna do slider panel */
+  border-radius: 8px;         /* lekko zaokrąglone rogi */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.ml-info p {
+  font-size: 0.85rem;
+  color: #666;
+  margin: 0;
+}
+
+.ml-info .btn-order {
+  font-size: 0.9rem;
+  padding: 6px 12px;
+  margin-top: 6px;
+  background: #111;
+  border: 1px solid #222;
+  color: #888;
+  transition: border-color 0.15s, color 0.15s;
+  border-radius: 30px;
+}
+
+.ml-info .btn-order:hover {
+  border-color: #e05555;
+  color: #e05555;
+}
