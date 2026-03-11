@@ -1,0 +1,45 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{% block title %}StockExchange{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="{% static 'trading/css/base.css' %}"/>
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+  <!-- HEADER -->
+  {% block header %}
+  <header id="main-header">
+    <a href="/" class="logo">StockExchange</a>
+    <div class="nav-pills">
+      {% if user.is_authenticated %}
+        <span class="nav-pill" style="cursor:default; opacity:0.6;">{{ user.first_name|default:user.email }}</span>
+        <a href="{% url 'logout' %}" class="nav-pill filled">Log Out</a>
+      {% else %}
+        <a href="{% url 'login' %}" class="nav-pill">Log In</a>
+        <a href="{% url 'register' %}" class="nav-pill filled">Register</a>
+      {% endif %}
+    </div>
+  </header>
+  {% endblock %}
+
+  <!-- PAGE CONTENT -->
+  {% block content %}{% endblock %}
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo">StockExchange</div>
+    <div class="footer-copy">2025 StockExchange. All rights reserved.</div>
+  </footer>
+
+  <script src="{% static 'trading/js/main.js' %}"></script>
+  {% block extra_js %}{% endblock %}
+
+</body>
+</html>

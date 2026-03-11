@@ -1,0 +1,231 @@
+/* ─── RESET & VARIABLES ───────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --black:      #090909;
+  --white:      #f8f7f4;
+  --accent:     #b8e036;
+  --accent2:    #2ee8c4;
+  --muted:      #6b6b6b;
+  --card-bg:    #0e0e0e;
+  --border:     rgba(255,255,255,0.07);
+  --ff-display: 'Playfair Display', Georgia, serif;
+  --ff-body:    'IBM Plex Sans', 'Helvetica Neue', sans-serif;
+  --ff-mono:    'IBM Plex Mono', 'Courier New', monospace;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--white);
+  color: var(--black);
+  font-family: var(--ff-body);
+  overflow-x: hidden;
+}
+
+/* ─── HEADER ──────────────────────────────────────────────── */
+header {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 200;
+  height: 72px;
+  padding: 0 52px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--black);
+  transition: background 0.5s ease, padding 0.4s ease;
+}
+
+header.scrolled-dark,
+header.scrolled-light {
+  background: transparent;
+  padding: 14px 52px;
+}
+
+/* Logo */
+.logo {
+  font-family: var(--ff-display);
+  font-weight: 500;
+  font-size: 1.25rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--white);
+  text-decoration: none;
+  padding: 8px 22px;
+  border-radius: 100px;
+  transition: background 0.3s, color 0.3s, border-color 0.3s;
+}
+
+header.scrolled-dark .logo {
+  background: rgba(255,255,255,0.10);
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: var(--white);
+}
+header.scrolled-dark .logo:hover { background: var(--black); color: var(--white); }
+
+header.scrolled-light .logo {
+  background: rgba(0,0,0,0.06);
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  border: 1px solid rgba(0,0,0,0.12);
+  color: var(--black);
+}
+header.scrolled-light .logo:hover { background: var(--black); color: var(--white); }
+
+/* Nav pills */
+.nav-pills { display: flex; gap: 10px; }
+
+.nav-pill {
+  font-family: var(--ff-body);
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: 9px 24px;
+  border-radius: 100px;
+  color: var(--white);
+  border: 1px solid rgba(255,255,255,0.22);
+  background: transparent;
+  cursor: pointer;
+  transition: background 0.25s, color 0.25s, border-color 0.25s, transform 0.2s;
+}
+.nav-pill:hover {
+  background: var(--white);
+  color: var(--black);
+  border-color: var(--white);
+  transform: translateY(-1px);
+}
+.nav-pill.filled {
+  background: var(--accent);
+  color: var(--black);
+  border-color: var(--accent);
+}
+.nav-pill.filled:hover {
+  background: var(--black);
+  color: var(--white);
+  border-color: var(--black);
+}
+
+/* Over dark backgrounds */
+header.scrolled-dark .nav-pill {
+  background: rgba(255,255,255,0.09);
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  border: 1px solid rgba(255,255,255,0.18);
+  color: var(--white);
+}
+header.scrolled-dark .nav-pill:hover {
+  background: var(--black);
+  color: var(--white);
+  border-color: var(--black);
+}
+header.scrolled-dark .nav-pill.filled {
+  background: rgba(184,224,54,0.85);
+  backdrop-filter: blur(18px);
+  color: var(--black);
+  border-color: transparent;
+}
+header.scrolled-dark .nav-pill.filled:hover {
+  background: var(--black);
+  color: var(--white);
+}
+
+/* Over light/white backgrounds */
+header.scrolled-light .nav-pill {
+  background: rgba(0,0,0,0.06);
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  border: 1px solid rgba(0,0,0,0.12);
+  color: var(--black);
+}
+header.scrolled-light .nav-pill:hover {
+  background: var(--black);
+  color: var(--white);
+  border-color: var(--black);
+}
+header.scrolled-light .nav-pill.filled {
+  background: var(--accent);
+  color: var(--black);
+  border-color: var(--accent);
+}
+header.scrolled-light .nav-pill.filled:hover {
+  background: var(--black);
+  color: var(--white);
+  border-color: var(--black);
+}
+
+/* ─── FOOTER ──────────────────────────────────────────────── */
+footer {
+  background: #030303;
+  border-top: 1px solid var(--border);
+  padding: 36px 72px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.footer-logo {
+  font-family: var(--ff-display);
+  font-size: 1rem;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.25);
+}
+
+.footer-copy {
+  font-family: var(--ff-body);
+  font-size: 0.75rem;
+  font-weight: 300;
+  color: rgba(255,255,255,0.18);
+}
+
+/* ─── SHARED SECTION PRIMITIVES ───────────────────────────── */
+.section-eyebrow {
+  font-family: var(--ff-body);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 12px;
+}
+
+.section-title {
+  font-family: var(--ff-display);
+  font-size: 2.8rem;
+  font-weight: 400;
+  font-style: italic;
+  color: var(--white);
+  line-height: 1.1;
+}
+
+.section-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 52px;
+}
+
+/* ─── SPINNER ─────────────────────────────────────────────── */
+.spinner {
+  width: 32px; height: 32px;
+  border: 1.5px solid rgba(184,224,54,0.15);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ─── RESPONSIVE ──────────────────────────────────────────── */
+@media (max-width: 960px) {
+  header  { padding-left: 24px; padding-right: 24px; }
+  footer  { padding-left: 24px; padding-right: 24px; }
+  header.scrolled-dark,
+  header.scrolled-light { padding-left: 24px; padding-right: 24px; }
+  .section-header { flex-direction: column; align-items: flex-start; gap: 24px; }
+}

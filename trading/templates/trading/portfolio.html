@@ -1,0 +1,105 @@
+{% extends "trading/base.html" %}
+{% load static %}
+
+{% block title %}Portfolio — StockExchange{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'trading/css/trading.css' %}"/>
+{% endblock %}
+
+{% block content %}
+
+<!-- TOP NAV BAR -->
+<div class="trade-topbar">
+  <a href="{% url 'home' %}" class="trade-logo">StockExchange</a>
+  <div></div>
+  <div class="trade-topbar-right">
+    <a href="{% url 'trading' %}" class="trade-nav-link">Trade</a>
+    <div class="trade-balance">
+      <span class="trade-balance-label">Cash</span>
+      <span class="trade-balance-value">${{ balance|floatformat:2 }}</span>
+    </div>
+    <a href="{% url 'logout' %}" class="trade-nav-link muted">Log Out</a>
+  </div>
+</div>
+
+<!-- PORTFOLIO LAYOUT -->
+<div class="portfolio-page">
+
+  <!-- Summary cards -->
+  <div class="portfolio-header">
+    <div class="portfolio-title">My Portfolio</div>
+    <div class="portfolio-summary">
+      <div class="summary-card">
+        <div class="summary-label">Total Value</div>
+        <div class="summary-value">${{ portfolio_total|floatformat:2 }}</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-label">Invested</div>
+        <div class="summary-value">${{ total_invested|floatformat:2 }}</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-label">Total Return</div>
+        <div class="summary-value {% if total_pnl >= 0 %}pos{% else %}neg{% endif %}">
+          {% if total_pnl >= 0 %}+{% endif %}${{ total_pnl|floatformat:2 }}
+          <span class="summary-pct">({% if total_pnl_pct >= 0 %}+{% endif %}{{ total_pnl_pct|floatformat:2 }}%)</span>
+        </div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-label">Cash Balance</div>
+        <div class="summary-value">${{ balance|floatformat:2 }}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Positions table -->
+  {% if positions %}
+  <div class="positions-table-wrap">
+    <table class="positions-table">
+      <thead>
+        <tr>
+          <th>Stock</th>
+          <th class="num">Shares</th>
+          <th class="num">Avg. Buy</th>
+          <th class="num">Current Price</th>
+          <th class="num">Market Value</th>
+          <th class="num">Return</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for pos in positions %}
+        <tr class="position-row" onclick="window.location='{% url 'trading_symbol' pos.symbol %}'">
+          <td>
+            <div class="pos-symbol">{{ pos.symbol }}</div>
+            <div class="pos-company">{{ pos.company }}</div>
+          </td>
+          <td class="num">{{ pos.shares|floatformat:4 }}</td>
+          <td class="num">${{ pos.avg_buy_price|floatformat:2 }}</td>
+          <td class="num">${{ pos.current_price|floatformat:2 }}</td>
+          <td class="num">${{ pos.current_value|floatformat:2 }}</td>
+          <td class="num">
+            <div class="pnl {% if pos.is_up %}pos{% else %}neg{% endif %}">
+              {% if pos.is_up %}+{% endif %}${{ pos.pnl_dollar|floatformat:2 }}
+            </div>
+            <div class="pnl-pct {% if pos.is_up %}pos{% else %}neg{% endif %}">
+              ({% if pos.is_up %}+{% endif %}{{ pos.pnl_pct|floatformat:2 }}%)
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  {% else %}
+  <div class="portfolio-empty">
+    <div class="empty-icon">📈</div>
+    <div class="empty-title">No open positions yet</div>
+    <div class="empty-sub">Head to the trading page to make your first trade.</div>
+    <a href="{% url 'trading' %}" class="btn-empty">Start Trading</a>
+  </div>
+  {% endif %}
+
+</div>
+
+{% endblock %}

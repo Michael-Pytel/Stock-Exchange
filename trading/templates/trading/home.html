@@ -1,0 +1,218 @@
+{% extends "trading/base.html" %}
+{% load static %}
+
+{% block title %}StockExchange — Trade Smarter{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'trading/css/home.css' %}"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+{% endblock %}
+
+{% block content %}
+
+  <!-- HERO -->
+  <section class="hero" id="hero">
+    <img
+      class="hero-image"
+      src="{% static 'trading/images/businesswomen-going-work-together-city.jpg' %}"
+      alt=""
+      aria-hidden="true"
+    />
+    <div class="hero-fade"></div>
+
+    <div class="hero-content">
+      <h1 class="hero-title">Every fortune began<br/>with one decision</h1>
+      <p class="hero-sub">Advanced ML-engineered analysis and autonomous trading robots — so your portfolio grows even when you're not watching.</p>
+      <div class="hero-cta">
+        <a href="/register/" class="btn-hero">Get Started</a>
+      </div>
+    </div>
+
+    <a class="scroll-arrow" href="#market" aria-label="Scroll to market data">
+      <div class="scroll-arrow-line"></div>
+      <div class="scroll-arrow-chevron">
+        <svg viewBox="0 0 14 14">
+          <polyline points="2,4 7,10 12,4"/>
+        </svg>
+      </div>
+    </a>
+  </section>
+
+  <!-- STATS BAR -->
+  <div class="stats-bar">
+    <div class="stat-item">
+      <div class="stat-value">$<span>2.4</span>B+</div>
+      <div class="stat-label">Daily Volume</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-value"><span>148</span>K+</div>
+      <div class="stat-label">Active Traders</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-value"><span>9,500</span>+</div>
+      <div class="stat-label">Listed Assets</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-value"><span>99.97</span>%</div>
+      <div class="stat-label">Uptime SLA</div>
+    </div>
+  </div>
+
+  <!-- LIVE MARKET DATA -->
+  <section class="market-section" id="market">
+    <div class="section-header">
+      <div>
+        <div class="section-eyebrow">Live Market Data</div>
+        <div class="section-title">Current Prices</div>
+      </div>
+      <div class="stock-selector" id="stock-selector">
+        {% for s in stocks %}
+        <button class="stock-pill {% if forloop.first %}active{% endif %}" data-symbol="{{ s }}">{{ s }}</button>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-card-header">
+        <div>
+          <div class="chart-symbol" id="chart-symbol">AAPL</div>
+          <div class="chart-company" id="chart-company">Apple Inc.</div>
+        </div>
+        <div>
+          <div class="chart-price-value" id="chart-price">—</div>
+          <div class="chart-price-change pos" id="chart-change">Loading...</div>
+        </div>
+      </div>
+      <div class="chart-tf-bar" id="tf-selector">
+        <button class="tf-btn" data-tf="1D">1D</button>
+        <button class="tf-btn" data-tf="1W">1W</button>
+        <button class="tf-btn active" data-tf="1M">1M</button>
+        <button class="tf-btn" data-tf="3M">3M</button>
+        <button class="tf-btn" data-tf="YTD">YTD</button>
+        <button class="tf-btn" data-tf="1Y">1Y</button>
+        <button class="tf-btn" data-tf="5Y">5Y</button>
+        <button class="tf-btn" data-tf="ALL">ALL</button>
+      </div>
+      <div class="chart-body">
+        <div class="chart-loading" id="chart-loading"><div class="spinner"></div></div>
+        <canvas id="stockChart" height="90"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <!-- TECHNICAL ANALYSIS TOOLS -->
+  <section class="features-section" id="features">
+    <div>
+      <div class="section-eyebrow">Advanced Tooling</div>
+      <div class="section-title">Technical Analysis<br/>for Professionals</div>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-marker">01 — Charts</div>
+        <div class="feature-title">Multi-Timeframe Analysis</div>
+        <div class="feature-desc">Analyse price action across 1-minute to monthly candles. Zoom in on intraday micro-moves or zoom out to observe the macro picture — all within a single seamless interface.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-marker">02 — Indicators</div>
+        <div class="feature-title">50+ Built-in Indicators</div>
+        <div class="feature-desc">From RSI and MACD to Bollinger Bands and Ichimoku Cloud. Layer unlimited indicators and customise every parameter with full numerical precision.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-marker">03 — Drawing</div>
+        <div class="feature-title">Smart Drawing Tools</div>
+        <div class="feature-desc">Fibonacci retracements, trend channels, and support and resistance zones — snap to price levels automatically and save your full chart layout across sessions.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-marker">04 — Alerts</div>
+        <div class="feature-title">Custom Price Alerts</div>
+        <div class="feature-desc">Set price, volume, or indicator-based alerts with instant push and email delivery. Never miss a breakout or a critical level, regardless of market hours.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-marker">05 — Order Flow</div>
+        <div class="feature-title">Volume Profile and Order Flow</div>
+        <div class="feature-desc">See where institutional capital concentrates. Volume-at-price histograms and delta analysis reveal the footprints of large market participants.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-marker">06 — Heatmaps</div>
+        <div class="feature-title">Market Heatmaps</div>
+        <div class="feature-desc">Scan the entire market in seconds. Colour-coded sector heatmaps surface the day's strongest movers and laggards, enabling rapid rotation decisions.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- AUTOMATED TRADING ROBOT -->
+  <section class="robot-section" id="robot">
+    <div class="robot-layout">
+      <div>
+        <div class="section-eyebrow">Algorithmic Trading</div>
+        <div class="section-title">Your Personal<br/>Trading Robot</div>
+        <p class="robot-desc">
+          Deploy a fully autonomous trading agent that monitors markets around the clock, executes strategies with millisecond precision, and adapts dynamically — while you remain in full control of every parameter.
+        </p>
+        <div class="robot-features">
+          <div class="robot-feature-row">
+            <div class="robot-feature-dot"></div>
+            <div class="robot-feature-text">Strategy backtesting on over ten years of historical data</div>
+          </div>
+          <div class="robot-feature-row">
+            <div class="robot-feature-dot"></div>
+            <div class="robot-feature-text">Dynamic position sizing with automated stop-loss management</div>
+          </div>
+          <div class="robot-feature-row">
+            <div class="robot-feature-dot"></div>
+            <div class="robot-feature-text">Multi-asset portfolio rebalancing on configurable schedules</div>
+          </div>
+          <div class="robot-feature-row">
+            <div class="robot-feature-dot"></div>
+            <div class="robot-feature-text">News sentiment integration and earnings event filters</div>
+          </div>
+          <div class="robot-feature-row">
+            <div class="robot-feature-dot"></div>
+            <div class="robot-feature-text">Full audit trail and real-time performance dashboard</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="robot-visual">
+        <div class="robot-chart-label">Bot Performance — 30 Day</div>
+        <div class="robot-bars">
+          <div class="robot-bar profit" style="height:45%"></div>
+          <div class="robot-bar loss"   style="height:28%"></div>
+          <div class="robot-bar profit" style="height:68%"></div>
+          <div class="robot-bar profit" style="height:54%"></div>
+          <div class="robot-bar loss"   style="height:22%"></div>
+          <div class="robot-bar profit" style="height:82%"></div>
+          <div class="robot-bar profit" style="height:63%"></div>
+          <div class="robot-bar profit" style="height:91%"></div>
+          <div class="robot-bar loss"   style="height:33%"></div>
+          <div class="robot-bar profit" style="height:76%"></div>
+          <div class="robot-bar profit" style="height:80%"></div>
+          <div class="robot-bar profit" style="height:96%"></div>
+        </div>
+        <div class="trade-signal">
+          <div class="signal-dot"></div>
+          <div class="signal-text">Bot Active — Scanning 9 Positions</div>
+        </div>
+        <div class="robot-stats-row">
+          <div class="robot-stat">
+            <div class="robot-stat-value">+18.4%</div>
+            <div class="robot-stat-label">30D Return</div>
+          </div>
+          <div class="robot-stat">
+            <div class="robot-stat-value">94%</div>
+            <div class="robot-stat-label">Win Rate</div>
+          </div>
+          <div class="robot-stat">
+            <div class="robot-stat-value">1.87</div>
+            <div class="robot-stat-label">Sharpe Ratio</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'trading/js/home.js' %}"></script>
+{% endblock %}

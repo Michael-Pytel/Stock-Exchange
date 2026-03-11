@@ -1,0 +1,200 @@
+{% extends "trading/base.html" %}
+{% load static %}
+
+{% block title %}{{ symbol }} — Trade — StockExchange{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'trading/css/trading.css' %}"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+{% endblock %}
+
+{% block content %}
+
+<!-- DISCLAIMER MODAL -->
+{% if show_disclaimer %}
+<div class="disclaimer-overlay" id="disclaimer-overlay">
+  <div class="disclaimer-modal">
+    <div class="disclaimer-icon">⚠</div>
+    <h2 class="disclaimer-title">Demo Account</h2>
+    <p class="disclaimer-body">
+      This is a <strong>simulated trading environment</strong> for educational purposes only.
+      You have been given <strong>$100,000 of virtual money</strong> to practice with.
+      <br/><br/>
+      No real money is involved. StockExchange is <strong>not a licensed broker</strong> and does
+      not execute real trades. All prices are sourced from market data feeds and may be delayed.
+      <br/><br/>
+      By accepting, you confirm you understand this platform is for learning purposes only.
+    </p>
+    <div class="disclaimer-actions">
+      <button class="btn-disclaimer-accept" id="btn-accept">I Understand — Let's Trade</button>
+      <button class="btn-disclaimer-dismiss" id="btn-dismiss">Dismiss &amp; Log Out</button>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<!-- TOP NAV BAR -->
+<div class="trade-topbar">
+  <a href="{% url 'home' %}" class="trade-logo">StockExchange</a>
+
+  <div class="trade-stock-pills" id="stock-selector">
+    {% for s in stocks %}
+    <a href="{% url 'trading_symbol' s %}" class="trade-pill {% if s == symbol %}active{% endif %}">{{ s }}</a>
+    {% endfor %}
+  </div>
+
+  <div class="trade-topbar-right">
+    <a href="{% url 'portfolio' %}" class="trade-nav-link">Portfolio</a>
+    <div class="trade-balance">
+      <span class="trade-balance-label">Balance</span>
+      <span class="trade-balance-value" id="live-balance">${{ balance|floatformat:2 }}</span>
+    </div>
+    <a href="{% url 'logout' %}" class="trade-nav-link muted">Log Out</a>
+  </div>
+</div>
+
+<!-- MAIN LAYOUT -->
+<div class="trade-layout">
+
+  <!-- LEFT: chart area -->
+  <div class="trade-main">
+
+    <div class="trade-header">
+      <div>
+        <div class="trade-symbol" id="chart-symbol">{{ symbol }}</div>
+        <div class="trade-company" id="chart-company">{{ company }}</div>
+      </div>
+      <div class="trade-price-block">
+        <div class="trade-price" id="chart-price">—</div>
+        <div class="trade-change pos" id="chart-change">Loading…</div>
+      </div>
+    </div>
+
+    <!-- Timeframe bar -->
+    <div class="trade-tf-bar" id="tf-selector">
+      <button class="tf-btn" data-tf="1D">1D</button>
+      <button class="tf-btn" data-tf="1W">1W</button>
+      <button class="tf-btn active" data-tf="1M">1M</button>
+      <button class="tf-btn" data-tf="3M">3M</button>
+      <button class="tf-btn" data-tf="YTD">YTD</button>
+      <button class="tf-btn" data-tf="1Y">1Y</button>
+      <button class="tf-btn" data-tf="5Y">5Y</button>
+      <button class="tf-btn" data-tf="ALL">ALL</button>
+    </div>
+
+    <!-- Chart -->
+    <div class="trade-chart-wrap">
+      <div class="trade-chart-loading" id="chart-loading"><div class="spinner"></div></div>
+      <canvas id="stockChart"></canvas>
+    </div>
+
+  </div>
+
+  <!-- RIGHT: order panel -->
+  <div class="trade-sidebar">
+
+    <div class="order-panel">
+
+      <!-- Buy / Sell tabs -->
+      <div class="order-tabs">
+        <button class="order-tab active" id="tab-buy"  onclick="switchTab('buy')">Buy</button>
+        <button class="order-tab"        id="tab-sell" onclick="switchTab('sell')">Sell</button>
+      </div>
+
+      <div class="order-body">
+        <div class="order-row">
+          <span class="order-label">Market Price</span>
+          <span class="order-value" id="order-price">—</span>
+        </div>
+
+        <div class="order-input-group">
+          <label class="order-label" for="shares-input">Shares</label>
+          <div class="order-input-wrap">
+            <input
+              type="number"
+              id="shares-input"
+              class="order-input"
+              placeholder="0"
+              min="0.0001"
+              step="0.0001"
+              oninput="updateEstimate()"
+            />
+          </div>
+        </div>
+
+        <div class="order-row">
+          <span class="order-label">Estimated Cost</span>
+          <span class="order-value strong" id="order-estimate">$0.00</span>
+        </div>
+
+        <div class="order-row">
+          <span class="order-label">Available Balance</span>
+          <span class="order-value" id="order-balance">${{ balance|floatformat:2 }}</span>
+        </div>
+
+        <div class="order-error" id="order-error"></div>
+
+        <button class="btn-order buy" id="btn-order" onclick="submitOrder()">
+          Buy {{ symbol }}
+        </button>
+      </div>
+
+      <!-- Current position -->
+      {% if position %}
+      <div class="position-box" id="position-box">
+        <div class="position-title">Your Position</div>
+        <div class="order-row">
+          <span class="order-label">Shares Held</span>
+          <span class="order-value" id="pos-shares">{{ position.shares }}</span>
+        </div>
+        <div class="order-row">
+          <span class="order-label">Avg. Buy Price</span>
+          <span class="order-value">${{ position.avg_buy_price|floatformat:2 }}</span>
+        </div>
+        <div class="order-row">
+          <span class="order-label">Market Value</span>
+          <span class="order-value" id="pos-value">—</span>
+        </div>
+        <div class="order-row">
+          <span class="order-label">Return</span>
+          <span class="order-value" id="pos-return">—</span>
+        </div>
+      </div>
+      {% else %}
+      <div class="position-box" id="position-box" style="display:none">
+        <div class="position-title">Your Position</div>
+        <div class="order-row">
+          <span class="order-label">Shares Held</span>
+          <span class="order-value" id="pos-shares">0</span>
+        </div>
+        <div class="order-row">
+          <span class="order-label">Avg. Buy Price</span>
+          <span class="order-value" id="pos-avg">—</span>
+        </div>
+        <div class="order-row">
+          <span class="order-label">Market Value</span>
+          <span class="order-value" id="pos-value">—</span>
+        </div>
+        <div class="order-row">
+          <span class="order-label">Return</span>
+          <span class="order-value" id="pos-return">—</span>
+        </div>
+      </div>
+      {% endif %}
+
+    </div>
+  </div>
+
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  const SYMBOL   = "{{ symbol }}";
+  const AVG_BUY  = {{ position.avg_buy_price|default:"0" }};
+  const HAS_POS  = {{ position|yesno:"true,false" }};
+  const CSRF     = "{{ csrf_token }}";
+</script>
+<script src="{% static 'trading/js/trading_page.js' %}"></script>
+{% endblock %}
