@@ -138,9 +138,9 @@ def calculate_coverage_winkler(predictor, test_data, target_col):
 
 
 def plot_backtest(predictor, test_data, period):
-    '''
-    Generates the plots with backtest results for each ticker
-    '''
+    """
+    Generates backtest plots for selected tickers
+    """
 
     print("------------------------------------Starting to plot backtest------------------------")
 
@@ -175,19 +175,31 @@ def plot_backtest(predictor, test_data, period):
         fig = plt.gcf()
 
         # -----------------------------
-        # Transparent dark background
+        # Background
         # -----------------------------
         fig.patch.set_facecolor((0, 0, 0, 0.12))
         ax.set_facecolor((0, 0, 0, 0.03))
 
         # -----------------------------
-        # Remove top/right borders
+        # Spines
         # -----------------------------
         ax.spines["top"].set_visible(False)
         ax.spines["right"].set_visible(False)
 
+        ax.spines["left"].set_color("white")
+        ax.spines["bottom"].set_color("white")
+
         # -----------------------------
-        # Grid style
+        # Axis colors
+        # -----------------------------
+        ax.tick_params(axis="x", colors="white")
+        ax.tick_params(axis="y", colors="white")
+
+        ax.xaxis.label.set_color("white")
+        ax.yaxis.label.set_color("white")
+
+        # -----------------------------
+        # Grid
         # -----------------------------
         ax.grid(
             True,
@@ -198,24 +210,27 @@ def plot_backtest(predictor, test_data, period):
         )
 
         # -----------------------------
-        # Change line colors
+        # Lines styling
         # -----------------------------
         lines = ax.get_lines()
 
         if len(lines) > 0:
-            lines[0].set_color("#2ecc71")   # true data
+            lines[0].set_color("lightgray")
+            lines[0].set_alpha(0.6)
             lines[0].set_linewidth(2)
+            lines[0].set_label("True price")
 
         if len(lines) > 1:
-            lines[1].set_color("#8e44ad")   # median
-            lines[1].set_linewidth(2)
+            lines[1].set_color("#e05555")
+            lines[1].set_linewidth(1.5)
+            lines[1].set_alpha(0.6)
+            lines[1].set_label("Median forecast")
 
         # -----------------------------
         # Quantile bands
         # -----------------------------
         for collection in ax.collections:
-            collection.set_facecolor("#8e44ad")
-            collection.set_alpha(0.18)
+            collection.set_facecolor((142/255, 68/255, 173/255, 0.18))
 
         # -----------------------------
         # Backtest cutoffs
@@ -236,29 +251,24 @@ def plot_backtest(predictor, test_data, period):
             except IndexError:
                 continue
 
-        # -----------------------------
-        # Title
-        # -----------------------------
-        ax.set_title(f"Backtest: {ticker}", fontsize=12)
 
         # -----------------------------
-        # Refresh legend (important!)
+        # Legend (custom)
         # -----------------------------
-        handles, labels = ax.get_legend_handles_labels()
-        ax.legend(handles, labels, frameon=False)
+        legend = ax.legend(frameon=False)
+
+        for text in legend.get_texts():
+            text.set_color("white")
 
         plt.tight_layout()
 
         # -----------------------------
-        # Save transparent PNG
+        # Save figure
         # -----------------------------
         plt.savefig(
-            f"backtest_plots/{ticker}_backtest.png",
+            f"backtest_plots/{ticker}.png",
             dpi=300,
             transparent=True
         )
 
         plt.close()
-
-
-

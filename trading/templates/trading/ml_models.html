@@ -5,30 +5,242 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'trading/css/trading.css' %}"/>
-<link rel="stylesheet" href="{% static 'trading/css/forecast.css' %}"/>
+<link rel="stylesheet" href="{% static 'trading/css/ml_models.css' %}"/>
 {% endblock %}
 
 {% block content %}
 
-<!-- TOP NAV BAR (z base.html będzie już automatycznie) -->
+<div class="trade-topbar">
+  <a href="{% url 'home' %}" class="trade-logo">StockExchange</a>
+  <div></div>
+  <div class="trade-topbar-right">
+    <a href="{% url 'trading' %}" class="trade-nav-link">Trade</a>
+    <a href="{% url 'portfolio' %}" class="trade-nav-link">Portfolio</a>
+    <a href="{% url 'logout' %}" class="trade-nav-link muted">Log Out</a>
+  </div>
+</div>
 
-<div class="trade-layout">
+<div class="ml-page">
 
-  <!-- LEFT: ML Models list -->
+  <!-- ─── HERO ─────────────────────────────────────────────── -->
+  <div class="ml-hero">
+    <div class="ml-hero-label">Machine Learning</div>
+    <h1 class="ml-hero-title">Model Overview &amp; Evaluation</h1>
+  </div>
 
-    <div class="forecast-heading">
-      <div class="forecast-heading-title">Machine Learning Models Overview</div>
-      <div class="forecast-heading-sub">TO DO</div>
+  <div class="ml-content">
+
+    <!-- 01 FRAMEWORK -->
+    <div class="ml-section">
+      <div class="ml-section-label">01 — Framework</div>
+      <div class="ml-section-title">AutoGluon TimeSeries</div>
+      <div class="ml-desc-card">
+        <p>
+          All forecasting models were trained using <strong>AutoGluon-TimeSeries</strong>, an open-source
+          AutoML framework by Amazon that automates feature engineering, model selection, hyperparameter
+          tuning, and ensemble construction for time series data.
+        </p>
+        <p>
+          We targeted <strong>daily log-returns</strong> of each equity over a
+          <span class="accent">5-step forecast horizon</span> (5 trading days).
+          AutoGluon's <span class="accent">TimeSeriesPredictor</span> was configured to optimise for
+          <strong>RMSE</strong>, with probabilistic forecasting enabled to produce full
+          quantile distributions (Q0.05 – Q0.95) alongside point estimates.
+        </p>
+      </div>
+    </div>
+
+    <!-- 02 MODELS -->
+    <div class="ml-section">
+      <div class="ml-section-label">02 — Trained Models</div>
+      <div class="ml-section-title">Trained Model Suite</div>
+
+      <div class="model-grid">
+        <div class="model-chip"><div class="model-chip-name">RecursiveTabular</div><div class="model-chip-desc">Regression model from Autogluon Tabular</div></div>
+        <div class="model-chip"><div class="model-chip-name">TFT</div><div class="model-chip-desc">Temporal Fusion Transformer — LSTM combined with transformer layer</div></div>
+        <div class="model-chip"><div class="model-chip-name">DeepAR</div><div class="model-chip-desc">Autoregressive model based on recurrent Neural Networks</div></div>
+        <div class="model-chip"><div class="model-chip-name">PatchTST</div><div class="model-chip-desc">Patch-based Transformer for time series</div></div>
+        <div class="model-chip"><div class="model-chip-name">AutoETS</div><div class="model-chip-desc">Automatically tuned exponential smoothing with trend and seasonality</div></div>
+        <div class="model-chip"><div class="model-chip-name">Chronos-2</div><div class="model-chip-desc">Pre-trained time series forecasting model </div></div>
+        <div class="model-chip"><div class="model-chip-name">Theta</div><div class="model-chip-desc">Classical decomposition model, robust baseline</div></div>
+        <div class="model-chip winner">
+          <div class="model-chip-name">WeightedEnsemble</div>
+          <div class="model-chip-desc">Optimal linear combination of candidate models</div>
+          <div class="model-chip-badge">★ Best RMSE</div>
+        </div>
+      </div>
+
+      <div class="ensemble-block">
+        <div class="ensemble-title">Winning Model — Weighted Ensemble Composition</div>
+        <div class="ensemble-formula">
+          <span class="ef-label">ŷ</span><span class="ef-op"> = </span>
+          <span class="ef-weight">0.412</span><span class="ef-op"> × </span><span class="ef-model">DeepAR</span><span class="ef-op"> + </span>
+          <span class="ef-weight">0.231</span><span class="ef-op"> × </span><span class="ef-model">PatchTST</span><span class="ef-op"> + </span>
+          <span class="ef-weight">0.178</span><span class="ef-op"> × </span><span class="ef-model">TFT</span><span class="ef-op"> + </span>
+          <span class="ef-weight">0.109</span><span class="ef-op"> × </span><span class="ef-model">Chronos-2</span><span class="ef-op"> + </span>
+          <span class="ef-weight">0.070</span><span class="ef-op"> × </span><span class="ef-model">RecursiveTabular</span>
+        </div>
+        <table class="weights-table">
+          <thead>
+            <tr><th>Model</th><th>Type</th><th class="num">Weight</th><th style="width:180px"></th></tr>
+          </thead>
+          <tbody>
+            {% for w in ensemble_weights %}
+            <tr>
+              <td class="model-name">{{ w.model }}</td>
+              <td>{{ w.type }}</td>
+              <td class="num">{{ w.weight }}</td>
+              <td>
+                <div class="weight-bar-wrap">
+                  <div class="weight-bar-bg"><div class="weight-bar-fill" style="width:{{ w.width_pct }}%"></div></div>
+                  <span class="weight-bar-pct">{{ w.pct_label }}</span>
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 03 EVALUATION -->
+    <div class="ml-section">
+      <div class="ml-section-label">03 — Evaluation</div>
+      <div class="ml-section-title">WeightedEnsemble Backtest — <span id="title-ticker-1" style="color:var(--accent)">{{ tickers.0 }}</span></div>
+      <div class="eval-section-sub">Rolling backtest across 20 windows — WeightedEnsemble model</div>
+
+      <!-- Ticker selector -->
+      <div class="ticker-selector" id="ticker-selector">
+        {% for ticker in tickers %}
+        <button class="ticker-pill {% if forloop.first %}active{% endif %}"
+                data-ticker="{{ ticker }}">{{ ticker }}</button>
+        {% endfor %}
+      </div>
+
+      <!-- ─── 1. PER-TICKER METRICS ──────────────────────── -->
+      {% for ticker, d in ticker_data.items %}
+      <div class="eval-content {% if forloop.first %}visible{% endif %}"
+           id="eval-{{ ticker }}">
+
+        <div class="eval-cards">
+          <div class="eval-card">
+            <div class="eval-card-label">Mean MASE</div>
+            <div class="eval-card-value">{{ d.mase|floatformat:4 }}</div>
+            <div class="eval-card-sub">Mean Abs Scaled Error</div>
+          </div>
+          <div class="eval-card">
+            <div class="eval-card-label">Mean RMSE</div>
+            <div class="eval-card-value">{{ d.rmse|floatformat:5 }}</div>
+            <div class="eval-card-sub">Root Mean Sq Error</div>
+          </div>
+          <div class="eval-card">
+            <div class="eval-card-label">Mean WQL</div>
+            <div class="eval-card-value">{{ d.wql|floatformat:4 }}</div>
+            <div class="eval-card-sub">Weighted Quantile Loss</div>
+          </div>
+          <div class="eval-card">
+            <div class="eval-card-label">Hit Ratio</div>
+            <div class="eval-card-value">{{ d.hit_ratio_pct }}%</div>
+            <div class="eval-card-sub">Direction accuracy</div>
+          </div>
+        </div>
+
+        <div class="eval-two-col">
+          <div class="eval-table-block">
+            <div class="eval-table-head">Winkler Score (0.1–0.9 interval)</div>
+            <table class="eval-inner-table">
+              <thead><tr><th>Metric</th><th class="num">Value</th></tr></thead>
+              <tbody>
+                <tr><td>Winkler Score</td><td class="num">{{ d.winkler|floatformat:5 }}</td></tr>
+                <tr><td>Winkler Normalised</td><td class="num">{{ d.winkler_norm|floatformat:4 }}</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="eval-table-block">
+            <div class="eval-table-head">Direction Accuracy</div>
+            <table class="eval-inner-table">
+              <thead><tr><th>Metric</th><th class="num">Value</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td>Hit Ratio</td>
+                  <td class="num {{ d.hit_color }}">{{ d.hit_ratio_pct }}%</td>
+                </tr>
+                <tr>
+                  <td>vs. Random (50%)</td>
+                  <td class="num {{ d.hit_color }}">{{ d.hit_vs_random }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+      {% endfor %}
+
+      <!-- ─── 2. PROBABILISTIC PREDICTIONS VISUAL ────────── -->
+      <div class="prob-eval-heading">
+        <div class="prob-eval-heading-title">Probabilistic Predictions Evaluation — <span id="title-ticker-2" style="color:var(--accent)">{{ tickers.0 }}</span></div>
+        <div class="backtest-visual-sub">Forecast trajectory vs. realised returns across backtest windows</div>
+      </div>
+
+      <div class="backtest-img-wrap">
+        {% for ticker in tickers %}
+        <img
+          id="img-{{ ticker }}"
+          src="{% static 'trading/images/' %}{{ ticker }}.png"
+          alt="{{ ticker }} backtest chart"
+          class="{% if not forloop.first %}hidden{% endif %}"
+        />
+        {% endfor %}
+      </div>
+
+      <!-- ─── 3. COVERAGE (global) ───────────────────────── -->
+      <div class="coverage-global">
+        <div class="ml-section-label" style="margin-bottom:16px;">Interval Coverage — All Tickers</div>
+        <div class="coverage-grid">
+          {% for c in coverage %}
+          <div class="coverage-card">
+            <div class="coverage-card-level">{{ c.level }}</div>
+            <div class="coverage-card-actual">{{ c.actual_pct }}%</div>
+            <div class="coverage-card-error {{ c.error_class }}">
+              Error: {{ c.error_sign }}{{ c.error_pct }}%
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
     </div>
 
   </div>
-
-  
-
 </div>
 
 {% endblock %}
 
 {% block extra_js %}
-<!-- Tutaj jeśli chcesz dodatkowy JS dla ML Models -->
+<script>
+document.getElementById('ticker-selector').addEventListener('click', function(e) {
+  const pill = e.target.closest('.ticker-pill');
+  if (!pill) return;
+  const ticker = pill.dataset.ticker;
+
+  // ── title spans ────────────────────────────────────────────
+  document.getElementById('title-ticker-1').textContent = ticker;
+  document.getElementById('title-ticker-2').textContent = ticker;
+
+  // ── pills ──────────────────────────────────────────────────
+  document.querySelectorAll('.ticker-pill').forEach(p => p.classList.remove('active'));
+  pill.classList.add('active');
+
+  // ── metrics panels ─────────────────────────────────────────
+  document.querySelectorAll('.eval-content').forEach(el => el.classList.remove('visible'));
+  const panel = document.getElementById('eval-' + ticker);
+  if (panel) panel.classList.add('visible');
+
+  // ── backtest images ─────────────────────────────────────────
+  document.querySelectorAll('.backtest-img-wrap img').forEach(img => img.classList.add('hidden'));
+  const img = document.getElementById('img-' + ticker);
+  if (img) img.classList.remove('hidden');
+});
+</script>
 {% endblock %}

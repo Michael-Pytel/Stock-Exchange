@@ -22,5 +22,5 @@ urlpatterns = [
     path("reset/<uidb64>/<token>/",     views.reset_password,    name="reset_password"),
 
     path("forecast/<str:symbol>/", views.forecast_json, name="forecast_json"),
-    path('ml-models/', views.ml_models_view, name='ml_models'),
+    path('ml-models/', views.ml_models, name='ml_models'),
 ]

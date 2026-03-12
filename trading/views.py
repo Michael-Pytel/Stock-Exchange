@@ -608,13 +608,107 @@ def forecast_json(request, symbol="AAPL"):
         return JsonResponse({"error": str(e)}, status=500)
     
 
-def ml_models_view(request):
-    """
-    Strona z opisem modeli (TO DO)
-    """
-    models_info = [
-        {"name": "Random Forest", "desc": "Tree-based ensemble model for regression."},
-        {"name": "LSTM", "desc": "Recurrent neural network capturing temporal dependencies."},
-        # dodaj więcej modeli
+import csv
+import os
+from django.shortcuts import render
+from django.conf import settings
+
+# Ścieżka do folderu z CSV-ami — dostosuj do swojej struktury projektu
+CSV_DIR = os.path.join(settings.BASE_DIR, "trading", "static", "trading", "csv")
+
+
+def _read_csv(filename):
+    """Wczytuje CSV jako listę słowników."""
+    path = os.path.join(CSV_DIR, filename)
+    with open(path, newline="", encoding="utf-8") as f:
+        return list(csv.DictReader(f))
+
+
+def ml_models(request):
+    # ── Wczytaj wszystkie CSV ──────────────────────────────────
+    backtest_rows  = _read_csv("backtest_summary.csv")   # Ticker, Mean_MASE, Mean_RMSE, Mean WQL
+    hit_ratio_rows = _read_csv("hit_ratio_backtest.csv")          # Ticker, Hit Ratio
+    winkler_rows   = _read_csv("winkler_per_ticker.csv")     # item_id, Winkler Score (0.1-0.9), Winkler Normalized
+    coverage_rows  = _read_csv("coverage_results.csv")   # jedna linia z coverage
+
+    # ── Zbuduj słownik per-ticker ──────────────────────────────
+    hit_map     = {r["Ticker"]: float(r["Hit Ratio"])           for r in hit_ratio_rows}
+    winkler_map = {r["item_id"]: r                              for r in winkler_rows}
+
+    ticker_data = {}
+    for row in backtest_rows:
+        ticker = row["Ticker"]
+        w      = winkler_map.get(ticker, {})
+        ticker_data[ticker] = {
+            "mase":          float(row["Mean_MASE"]),
+            "rmse":          float(row["Mean_RMSE"]),
+            "wql":           float(row["Mean WQL"]),
+            "hit_ratio":     hit_map.get(ticker, 0.0),
+            "winkler":       float(w.get("Winkler Score (0.1-0.9)", 0)),
+            "winkler_norm":  float(w.get("Winkler Normalized", 0)),
+        }
+
+    # ── Dodaj pola formatujące dla template ───────────────────
+    for ticker, d in ticker_data.items():
+        hr = d["hit_ratio"]
+        diff = hr - 0.5
+        d["hit_ratio_pct"]  = f"{hr * 100:.2f}"
+        d["hit_color"]      = "good" if hr >= 0.55 else ("bad" if hr < 0.50 else "")
+        d["hit_vs_random"]  = f"{'+' if diff >= 0 else ''}{diff * 100:.2f}% vs 50%"
+
+    tickers = list(ticker_data.keys())
+
+    # ── Wagi ensembla 
+    raw_weights = [
+        {"model": "RecursiveTabular",          "type": "Gradient Boosting", "weight": 0.448},
+        {"model": "Temporal Fusion Transformer",        "type": "Transformer",       "weight": 0.276},
+        {"model": "DeepAR",             "type": "Probabilistic RNN",       "weight": 0.241},
+        {"model": "PatchTST",       "type": "Transformer",  "weight": 0.034},
+        
     ]
-    return render(request, "trading/ml_models.html", {"models": models_info})
+    max_w = max(w["weight"] for w in raw_weights)
+    ensemble_weights = [
+        {**w,
+         "width_pct": round(w["weight"] / max_w * 100, 1),
+         "pct_label": f"{w['weight']*100:.1f}%"}
+        for w in raw_weights
+    ]
+
+    # ── Coverage (jedna linia) ─────────────────────────────────
+    cov = coverage_rows[0]
+    coverage = [
+        {
+            "level": "α = 0.05",
+            "actual": float(cov["Coverage Actual (0.05)"]),
+            "error":  float(cov["Coverage Error (0.05)"]),
+        },
+        {
+            "level": "α = 0.10",
+            "actual": float(cov["Coverage Actual (0.1)"]),
+            "error":  float(cov["Coverage Error (0.1)"]),
+        },
+        {
+            "level": "α = 0.30",
+            "actual": float(cov["Coverage Actual (0.3)"]),
+            "error":  float(cov["Coverage Error (0.3)"]),
+        },
+        {
+            "level": "α = 0.90",
+            "actual": float(cov["Coverage Actual (0.9)"]),
+            "error":  float(cov["Coverage Error (0.9)"]),
+        },
+    ]
+
+    # ── Formatowanie coverage ──────────────────────────────────
+    for c in coverage:
+        c["actual_pct"]  = f"{c['actual'] * 100:.2f}"
+        c["error_pct"]   = f"{abs(c['error']) * 100:.2f}"
+        c["error_sign"]  = "+" if c["error"] >= 0 else "−"
+        c["error_class"] = "bad" if c["error"] > 0.01 else "good"
+
+    return render(request, "trading/ml_models.html", {
+        "tickers":          tickers,
+        "ticker_data":      ticker_data,
+        "coverage":         coverage,
+        "ensemble_weights": ensemble_weights,
+    })

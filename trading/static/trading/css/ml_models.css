@@ -1,0 +1,252 @@
+/* ═══════════════════════════════════════════════════════════
+   ml_models.css  —  ML Models page styles
+   Place in: trading/static/trading/css/ml_models.css
+═══════════════════════════════════════════════════════════ */
+
+body:has(.trade-topbar) { background: #080808; color: var(--white); }
+
+/* ─── PAGE WRAPPER ────────────────────────────────────────── */
+.ml-page { padding-top: 60px; min-height: 100vh; padding-bottom: 100px; }
+
+/* ─── HERO ────────────────────────────────────────────────── */
+.ml-hero {
+  padding: 64px 60px 52px;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+}
+.ml-hero::before {
+  content: '';
+  position: absolute; top: -80px; right: -80px;
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(184,224,54,0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+.ml-hero-label {
+  font-family: var(--ff-mono); font-size: 0.68rem; font-weight: 500;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 16px;
+}
+.ml-hero-title {
+  font-family: var(--ff-display); font-size: 3rem; font-weight: 600;
+  color: var(--white); letter-spacing: -0.03em; line-height: 1.05;
+  max-width: 640px;
+}
+
+/* ─── CONTENT WRAPPER ─────────────────────────────────────── */
+.ml-content { max-width: 1200px; padding: 0 60px; }
+
+/* ─── SECTIONS ────────────────────────────────────────────── */
+.ml-section { padding: 52px 0; border-bottom: 1px solid var(--border); }
+.ml-section:last-child { border-bottom: none; }
+
+.ml-section-label {
+  font-family: var(--ff-mono); font-size: 0.65rem; font-weight: 500;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: rgba(255,255,255,0.2); margin-bottom: 12px;
+}
+.ml-section-title {
+  font-family: var(--ff-display); font-size: 1.6rem; font-weight: 600;
+  color: var(--white); letter-spacing: -0.02em; margin-bottom: 24px;
+}
+
+/* ─── DESC CARD ───────────────────────────────────────────── */
+.ml-desc-card {
+  background: #0e0e0e; border: 1px solid var(--border);
+  border-radius: 16px; padding: 32px 36px;
+}
+.ml-desc-card p {
+  font-family: var(--ff-body); font-size: 0.92rem; font-weight: 300;
+  line-height: 1.85; color: rgba(255,255,255,0.6); margin: 0 0 16px;
+}
+.ml-desc-card p:last-child { margin-bottom: 0; }
+.ml-desc-card strong { color: rgba(255,255,255,0.85); font-weight: 500; }
+.ml-desc-card .accent { color: var(--accent); font-weight: 500; }
+
+/* ─── MODEL GRID ──────────────────────────────────────────── */
+.model-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(200px,1fr));
+  gap: 12px; margin-bottom: 36px;
+}
+.model-chip {
+  background: #0e0e0e; border: 1px solid var(--border);
+  border-radius: 12px; padding: 18px 20px;
+  display: flex; flex-direction: column; gap: 6px;
+  transition: border-color 0.2s;
+}
+.model-chip:hover           { border-color: rgba(184,224,54,0.25); }
+.model-chip.winner          { border-color: rgba(184,224,54,0.35); background: rgba(184,224,54,0.04); }
+.model-chip-name            { font-family: var(--ff-mono); font-size: 0.85rem; font-weight: 500; color: var(--white); }
+.model-chip.winner .model-chip-name { color: var(--accent); }
+.model-chip-desc            { font-family: var(--ff-body); font-size: 0.72rem; color: rgba(255,255,255,0.3); line-height: 1.5; }
+.model-chip-badge {
+  display: inline-block; margin-top: 4px;
+  font-family: var(--ff-mono); font-size: 0.6rem; font-weight: 500;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  padding: 3px 8px; border-radius: 100px;
+  background: rgba(184,224,54,0.15); color: var(--accent); width: fit-content;
+}
+
+/* ─── ENSEMBLE BLOCK ──────────────────────────────────────── */
+.ensemble-block {
+  background: #0e0e0e; border: 1px solid var(--border);
+  border-radius: 16px; padding: 32px 36px;
+}
+.ensemble-title {
+  font-family: var(--ff-body); font-size: 0.78rem; font-weight: 500;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: rgba(255,255,255,0.25); margin-bottom: 24px;
+}
+.ensemble-formula {
+  font-family: var(--ff-mono); font-size: 0.88rem; color: rgba(255,255,255,0.75);
+  background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 10px; padding: 20px 24px; line-height: 2;
+  margin-bottom: 28px; word-break: break-all;
+}
+.ef-label  { color: var(--accent); }
+.ef-op     { color: rgba(255,255,255,0.3); }
+.ef-model  { color: var(--white); }
+.ef-weight { color: rgba(184,224,54,0.7); font-size: 0.8rem; }
+
+.weights-table { width: 100%; border-collapse: collapse; }
+.weights-table th {
+  font-family: var(--ff-body); font-size: 0.65rem; font-weight: 500;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: rgba(255,255,255,0.25); text-align: left;
+  padding: 0 16px 12px; border-bottom: 1px solid var(--border);
+}
+.weights-table th.num,
+.weights-table td.num { text-align: right; }
+.weights-table td {
+  font-family: var(--ff-mono); font-size: 0.85rem; color: rgba(255,255,255,0.7);
+  padding: 14px 16px; border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.weights-table td.model-name { color: var(--white); font-weight: 500; }
+.weight-bar-wrap   { display: flex; align-items: center; gap: 10px; }
+.weight-bar-bg     { flex: 1; height: 4px; background: rgba(255,255,255,0.07); border-radius: 2px; overflow: hidden; }
+.weight-bar-fill   { height: 100%; background: var(--accent); border-radius: 2px; }
+.weight-bar-pct    { font-size: 0.75rem; color: var(--accent); min-width: 38px; text-align: right; }
+
+/* ─── EVALUATION HEADER ───────────────────────────────────── */
+.eval-section-sub {
+  font-family: var(--ff-body); font-size: 0.82rem;
+  color: rgba(255,255,255,0.35); margin-bottom: 32px; margin-top: -16px;
+}
+
+/* ─── TICKER PILLS ────────────────────────────────────────── */
+.ticker-selector { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 32px; }
+.ticker-pill {
+  font-family: var(--ff-mono); font-size: 0.75rem; font-weight: 500;
+  letter-spacing: 0.04em; padding: 7px 16px; border-radius: 100px;
+  border: 1px solid rgba(255,255,255,0.08); background: transparent;
+  color: rgba(255,255,255,0.4); cursor: pointer; transition: all 0.2s ease;
+}
+.ticker-pill:hover  { color: var(--white); border-color: rgba(255,255,255,0.25); }
+.ticker-pill.active { background: var(--accent); border-color: var(--accent); color: #080808; }
+
+/* ─── BACKTEST IMAGE ──────────────────────────────────────── */
+.backtest-visual-header {
+  margin-bottom: 20px;
+}
+.backtest-visual-title {
+  font-family: var(--ff-display); font-size: 1.25rem; font-weight: 600;
+  color: var(--white); letter-spacing: -0.02em; margin-bottom: 4px;
+}
+.backtest-visual-sub {
+  font-family: var(--ff-body); font-size: 0.78rem;
+  color: rgba(255,255,255,0.3);
+}
+
+.backtest-img-wrap {
+  position: relative;
+  background: #0e0e0e; border: 1px solid var(--border);
+  border-radius: 16px; overflow: hidden;
+  margin-bottom: 40px;
+}
+.backtest-img-wrap img {
+  width: 100%; height: auto; display: block;
+  transition: opacity 0.25s ease;
+}
+.backtest-img-wrap img.hidden {
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* ─── PROBABILISTIC EVAL HEADING ──────────────────────────── */
+.prob-eval-heading {
+    margin-top:40px;
+  margin-bottom: 28px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+}
+.prob-eval-heading-title {
+  font-family: var(--ff-display); font-size: 1.5rem; font-weight: 600;
+  color: var(--white); letter-spacing: -0.02em;
+}
+
+/* ─── EVAL PANELS ─────────────────────────────────────────── */
+.eval-content         { display: none; }
+.eval-content.visible { display: block; }
+
+.eval-cards {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 14px; margin-bottom: 28px;
+}
+.eval-card {
+  background: #0e0e0e; border: 1px solid var(--border);
+  border-radius: 14px; padding: 22px;
+}
+.eval-card-label {
+  font-family: var(--ff-body); font-size: 0.65rem; font-weight: 500;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: rgba(255,255,255,0.25); margin-bottom: 10px;
+}
+.eval-card-value {
+  font-family: var(--ff-mono); font-size: 1.3rem; font-weight: 400;
+  color: var(--white); letter-spacing: -0.02em;
+}
+.eval-card-sub { font-family: var(--ff-body); font-size: 0.7rem; color: rgba(255,255,255,0.25); margin-top: 5px; }
+
+.eval-two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.eval-table-block {
+  background: #0e0e0e; border: 1px solid var(--border); border-radius: 14px; overflow: hidden;
+}
+.eval-table-head {
+  padding: 18px 22px; border-bottom: 1px solid var(--border);
+  font-family: var(--ff-body); font-size: 0.68rem; font-weight: 500;
+  letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.25);
+}
+.eval-inner-table { width: 100%; border-collapse: collapse; }
+.eval-inner-table th {
+  font-family: var(--ff-body); font-size: 0.62rem; font-weight: 500;
+  letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.2);
+  padding: 12px 18px 10px; text-align: left;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.eval-inner-table th.num,
+.eval-inner-table td.num { text-align: right; }
+.eval-inner-table td {
+  font-family: var(--ff-mono); font-size: 0.82rem; color: rgba(255,255,255,0.65);
+  padding: 12px 18px; border-bottom: 1px solid rgba(255,255,255,0.03);
+}
+.eval-inner-table tr:last-child td { border-bottom: none; }
+.eval-inner-table td.good { color: var(--accent); }
+.eval-inner-table td.bad  { color: #e05555; }
+
+/* ─── COVERAGE ────────────────────────────────────────────── */
+.coverage-global { margin-top: 28px; }
+.coverage-grid   { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+.coverage-card {
+  background: #0e0e0e; border: 1px solid var(--border);
+  border-radius: 14px; padding: 20px;
+}
+.coverage-card-level  { font-family: var(--ff-mono); font-size: 0.68rem; letter-spacing: 0.1em; color: rgba(255,255,255,0.2); margin-bottom: 8px; }
+.coverage-card-actual { font-family: var(--ff-mono); font-size: 1.25rem; font-weight: 400; color: var(--white); margin-bottom: 4px; }
+.coverage-card-error  { font-family: var(--ff-mono); font-size: 0.78rem; }
+.coverage-card-error.good { color: var(--accent); }
+.coverage-card-error.bad  { color: #e05555; }
