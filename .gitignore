@@ -14,10 +14,8 @@ pip-wheel-metadata/
 
 # ── Virtual Environment ───────────────────────────────────────
 venv/
-env/
 .env/
 .venv/
-ENV/
 
 # ── Environment Variables ─────────────────────────────────────
 .env

@@ -1,0 +1,242 @@
+{% extends "trading/base.html" %}
+{% block nav_robot %}active{% endblock %}
+{% load static %}
+
+{% block title %}Robot — {{ symbol }} — StockExchange{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'trading/css/trading.css' %}"/>
+<link rel="stylesheet" href="{% static 'trading/css/robot.css' %}"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+{% endblock %}
+
+{% block content %}
+
+<!-- TOP NAV BAR -->
+<div class="trade-topbar">
+  <a href="{% url 'home' %}" class="trade-logo">StockExchange</a>
+
+  <div class="trade-stock-pills" id="stock-selector">
+    {% for s in stocks %}
+    <a href="{% url 'robot_ticker' s %}" class="trade-pill {% if s == symbol %}active{% endif %}">{{ s }}</a>
+    {% endfor %}
+  </div>
+
+  <div class="trade-topbar-right">
+    <a href="{% url 'trading' %}" class="trade-nav-link">Trade</a>
+    <a href="{% url 'portfolio' %}" class="trade-nav-link">Portfolio</a>
+    <div class="trade-balance">
+      <span class="trade-balance-label">Cash</span>
+      <span class="trade-balance-value">${{ balance|floatformat:2 }}</span>
+    </div>
+    <a href="{% url 'logout' %}" class="trade-nav-link muted">Log Out</a>
+  </div>
+</div>
+
+<!-- MAIN LAYOUT -->
+<div class="robot-page-layout">
+
+  <!-- LEFT: chart area -->
+  <div class="robot-main">
+
+    <div class="robot-page-header">
+      <div>
+        <div class="robot-page-eyebrow">PPO Reinforcement Learning Agent</div>
+        <div class="robot-page-title">{{ symbol }} <span class="robot-page-company">{{ company }}</span></div>
+      </div>
+      <div class="robot-profile-toggle" id="profile-toggle">
+        <button class="profile-btn active" data-profile="aggressive">Aggressive</button>
+        <button class="profile-btn" data-profile="conservative">Conservative</button>
+      </div>
+    </div>
+
+    <!-- Equity curve chart -->
+    <div class="robot-chart-section">
+      <div class="robot-chart-heading">
+        <span class="robot-chart-title">Equity Curve vs Buy &amp; Hold</span>
+        <span class="robot-chart-sub">Test period: 2024-07-01 → today</span>
+      </div>
+      <div class="robot-chart-wrap">
+        <div class="robot-chart-loading visible" id="chart-loading">
+          <div class="spinner"></div>
+        </div>
+        <canvas id="equityChart"></canvas>
+      </div>
+    </div>
+
+    <!-- Metrics row -->
+    <div class="robot-metrics" id="robot-metrics">
+      <div class="robot-metric-card" id="m-return">
+        <div class="robot-metric-label">Agent Return</div>
+        <div class="robot-metric-value">—</div>
+        <div class="robot-metric-sub">vs test period</div>
+      </div>
+      <div class="robot-metric-card" id="m-bah">
+        <div class="robot-metric-label">Buy &amp; Hold</div>
+        <div class="robot-metric-value">—</div>
+        <div class="robot-metric-sub">benchmark return</div>
+      </div>
+      <div class="robot-metric-card" id="m-sharpe">
+        <div class="robot-metric-label">Sharpe Ratio</div>
+        <div class="robot-metric-value">—</div>
+        <div class="robot-metric-sub">risk-adjusted</div>
+      </div>
+      <div class="robot-metric-card" id="m-dd">
+        <div class="robot-metric-label">Max Drawdown</div>
+        <div class="robot-metric-value">—</div>
+        <div class="robot-metric-sub">peak → trough</div>
+      </div>
+      <div class="robot-metric-card" id="m-wr">
+        <div class="robot-metric-label">Win Rate</div>
+        <div class="robot-metric-value">—</div>
+        <div class="robot-metric-sub">profitable trades</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- RIGHT: signal panel -->
+  <div class="robot-sidebar">
+
+    <!-- Today's signal -->
+    <div class="signal-panel" id="signal-panel">
+      <div class="signal-panel-label">Today's Signal</div>
+
+      <div class="signal-loading" id="signal-loading">
+        <div class="spinner"></div>
+      </div>
+
+      <div class="signal-result" id="signal-result" style="display:none">
+        <div class="signal-badge" id="signal-badge">—</div>
+        <div class="signal-ticker" id="signal-ticker">{{ symbol }}</div>
+        <div class="signal-profile-tag" id="signal-profile-tag">aggressive model</div>
+      </div>
+
+      <div class="signal-error" id="signal-error" style="display:none"></div>
+    </div>
+
+    <!-- Model info card -->
+    <div class="robot-info-card">
+      <div class="robot-info-title">About This Model</div>
+      <div class="robot-info-row">
+        <span class="robot-info-key">Algorithm</span>
+        <span class="robot-info-val">PPO (Stable-Baselines3)</span>
+      </div>
+      <div class="robot-info-row">
+        <span class="robot-info-key">Observation</span>
+        <span class="robot-info-val">203 features (20d window)</span>
+      </div>
+      <div class="robot-info-row">
+        <span class="robot-info-key">Actions</span>
+        <span class="robot-info-val">Hold / Buy / Sell</span>
+      </div>
+      <div class="robot-info-row">
+        <span class="robot-info-key">Universe</span>
+        <span class="robot-info-val">9 US stocks</span>
+      </div>
+      <div class="robot-info-row">
+        <span class="robot-info-key">Data</span>
+        <span class="robot-info-val">Alpaca daily OHLCV</span>
+      </div>
+      <div class="robot-info-row">
+        <span class="robot-info-key">Indicators</span>
+        <span class="robot-info-val">RSI, MACD, BB, ATR, EMA</span>
+      </div>
+    </div>
+
+    <!-- ── Disclaimer ───────────────────────────────────────────────────── -->
+    <div class="robot-disclaimer">
+      ⚠ This signal is generated by an RL agent trained on historical data. It is for educational purposes only and does not constitute financial advice.
+    </div>
+
+  </div>
+</div>
+
+<!-- ── DEPLOY + HISTORY SECTION ─────────────────────────────────────────── -->
+<div class="robot-lower-section">
+
+  <!-- Deploy panel -->
+  <div class="deploy-panel" id="deploy-panel">
+    <div class="deploy-panel-header">
+      <div class="deploy-panel-title">Automated Trading</div>
+      <div class="deploy-status" id="deploy-status">
+        <span class="deploy-dot inactive" id="deploy-dot"></span>
+        <span class="deploy-status-text" id="deploy-status-text">Not deployed</span>
+      </div>
+    </div>
+    <p class="deploy-desc">
+      Deploy the robot to trade <strong id="deploy-ticker-label">{{ symbol }}</strong> automatically every trading day at market close.
+      It will buy, hold, or sell using the selected risk profile and update your demo portfolio in real time.
+    </p>
+
+    <div class="budget-input-group">
+      <label class="budget-label" for="budget-input">Budget Allocation</label>
+      <div class="budget-input-wrap">
+        <span class="budget-currency">$</span>
+        <input
+          type="number"
+          id="budget-input"
+          class="budget-input"
+          min="100"
+          step="100"
+          value="10000"
+          placeholder="10000"
+        />
+      </div>
+      <div class="budget-hint">
+        Available: <span id="budget-available">${{ balance|floatformat:2 }}</span>
+      </div>
+    </div>
+
+    <div class="deploy-actions">
+      <button class="btn-deploy" id="btn-deploy" onclick="deployRobot()">
+        Deploy Robot
+      </button>
+      <button class="btn-stop" id="btn-stop" onclick="stopRobot()" style="display:none">
+        Stop Robot
+      </button>
+    </div>
+    <div class="deploy-error" id="deploy-error"></div>
+  </div>
+
+  <!-- Trade history -->
+  <div class="history-panel">
+    <div class="history-panel-header">
+      <div class="history-panel-title">Trade History</div>
+      <div class="history-tabs">
+        <button class="history-tab active" id="tab-backtest" onclick="switchHistoryTab('backtest')">
+          Backtest Period
+        </button>
+        <button class="history-tab" id="tab-live" onclick="switchHistoryTab('live')">
+          Live Trades
+        </button>
+      </div>
+    </div>
+
+    <div class="history-loading" id="history-loading">
+      <div class="spinner"></div>
+    </div>
+
+    <div id="history-empty" style="display:none" class="history-empty">
+      No trades found.
+    </div>
+
+    <table class="history-table" id="history-table" style="display:none">
+      <thead id="history-thead">
+        <!-- filled by JS based on active tab -->
+      </thead>
+      <tbody id="history-tbody"></tbody>
+    </table>
+  </div>
+
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  const SYMBOL  = "{{ symbol }}";
+  const CSRF    = "{{ csrf_token }}";
+</script>
+<script src="{% static 'trading/js/robot_page.js' %}"></script>
+{% endblock %}

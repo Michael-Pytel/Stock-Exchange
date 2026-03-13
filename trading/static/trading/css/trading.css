@@ -155,45 +155,106 @@ body:has(.trade-topbar) footer       { display: none; }
 .trade-change.pos { color: var(--accent); }
 .trade-change.neg { color: #e05555; }
 
+/* ─── CONTROLS BAR ────────────────────────────────────────── */
+.chart-controls-bar {
+  display: flex;
+  align-items: stretch;
+  border-bottom: 1px solid var(--border);
+  min-height: 42px;
+}
+
 /* ─── TIMEFRAME BAR ───────────────────────────────────────── */
 .trade-tf-bar {
   display: flex;
   gap: 0;
-  border-bottom: 1px solid var(--border);
-  margin-bottom: 0;
+  flex: 0 0 auto;
 }
 
 .tf-btn {
   font-family: var(--ff-mono);
-  font-size: 0.78rem;
+  font-size: 0.75rem;
   font-weight: 500;
   letter-spacing: 0.06em;
-  color: rgba(255,255,255,0.3);
+  color: rgba(255,255,255,0.28);
   background: transparent;
   border: none;
   cursor: pointer;
-  padding: 12px 16px 10px;
+  padding: 10px 13px 8px;
   position: relative;
-  transition: color 0.2s;
+  transition: color 0.18s;
+  white-space: nowrap;
 }
-
 .tf-btn::after {
   content: '';
   position: absolute;
   bottom: 0; left: 50%; right: 50%;
   height: 2px;
   background: var(--accent);
-  transition: left 0.2s, right 0.2s;
+  transition: left 0.18s, right 0.18s;
+}
+.tf-btn:hover  { color: rgba(255,255,255,0.6); }
+.tf-btn.active { color: var(--white); }
+.tf-btn.active::after { left: 13px; right: 13px; }
+
+/* ─── CHART TYPE BAR ──────────────────────────────────────── */
+.chart-type-bar {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 0 10px;
+  border-left: 1px solid var(--border);
+  border-right: 1px solid var(--border);
 }
 
-.tf-btn:hover { color: rgba(255,255,255,0.65); }
-.tf-btn.active { color: var(--white); }
-.tf-btn.active::after { left: 16px; right: 16px; }
+.ct-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--ff-body);
+  font-size: 0.7rem;
+  color: rgba(255,255,255,0.22);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  padding: 5px 9px;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.ct-btn:hover  { color: rgba(255,255,255,0.55); background: rgba(255,255,255,0.04); }
+.ct-btn.active { color: var(--white); background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.1); }
 
-/* ─── CHART ───────────────────────────────────────────────── */
+/* ─── MARKET STATUS ───────────────────────────────────────── */
+.market-status-badge {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0 14px;
+  margin-left: auto;
+}
+.ms-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.ms-dot.open   { background: #26a69a; animation: pulseOpen 2s ease-in-out infinite; }
+.ms-dot.pre    { background: #f0a030; }
+.ms-dot.after  { background: #8060c8; }
+.ms-dot.closed { background: #333; }
+.ms-label {
+  font-family: var(--ff-mono);
+  font-size: 0.7rem;
+  color: rgba(255,255,255,0.28);
+}
+@keyframes pulseOpen {
+  0%,100% { box-shadow: 0 0 0 0 rgba(38,166,154,0.4); }
+  50%      { box-shadow: 0 0 0 5px rgba(38,166,154,0.0); }
+}
+
+/* ─── CHART WRAP ──────────────────────────────────────────── */
 .trade-chart-wrap {
   position: relative;
-  padding-top: 28px;
+  padding-top: 0;
 }
 
 .trade-chart-loading {
@@ -202,12 +263,51 @@ body:has(.trade-topbar) footer       { display: none; }
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #080808;
-  z-index: 5;
+  background: rgba(8,8,8,0.8);
+  z-index: 10;
   opacity: 0; pointer-events: none;
   transition: opacity 0.2s;
 }
 .trade-chart-loading.visible { opacity: 1; pointer-events: all; }
+
+/* ─── OHLCV TOOLTIP ───────────────────────────────────────── */
+.chart-tooltip {
+  position: absolute;
+  top: 8px; left: 8px;
+  z-index: 9;
+  background: rgba(8,8,8,0.9);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 8px;
+  padding: 9px 13px;
+  pointer-events: none;
+  backdrop-filter: blur(6px);
+}
+.ct-date {
+  font-family: var(--ff-body);
+  font-size: 0.68rem;
+  color: rgba(255,255,255,0.3);
+  margin-bottom: 5px;
+  letter-spacing: 0.03em;
+}
+.ct-grid {
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 1px 10px;
+}
+.ct-lbl { font-family: var(--ff-mono); font-size: 0.68rem; color: rgba(255,255,255,0.22); }
+.ct-val { font-family: var(--ff-mono); font-size: 0.68rem; color: rgba(255,255,255,0.7); text-align: right; }
+
+/* ─── BASELINE HINT ───────────────────────────────────────── */
+.baseline-hint {
+  position: absolute;
+  top: 8px; right: 60px;
+  z-index: 9;
+  font-family: var(--ff-body);
+  font-size: 0.68rem;
+  color: rgba(255,255,255,0.25);
+  pointer-events: none;
+  font-style: italic;
+}
 
 /* ─── SIDEBAR / ORDER PANEL ───────────────────────────────── */
 .trade-sidebar {
@@ -626,3 +726,79 @@ body:has(.trade-topbar) footer       { display: none; }
   transition: transform 0.2s;
 }
 .btn-empty:hover { transform: translateY(-1px); }
+/* ─── INDICATOR BAR ─────────────────────────────────────────── */
+.indicator-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  padding: 8px 4px 4px;
+  border-top: 1px solid rgba(255,255,255,0.05);
+  margin-top: 2px;
+}
+
+.ind-label {
+  font-family: var(--ff-mono);
+  font-size: 0.7rem;
+  color: rgba(255,255,255,0.25);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-right: 4px;
+}
+
+.ind-check {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(255,255,255,0.07);
+  background: rgba(255,255,255,0.02);
+  transition: background 0.15s, border-color 0.15s;
+}
+.ind-check:hover {
+  background: rgba(255,255,255,0.05);
+  border-color: rgba(255,255,255,0.12);
+}
+.ind-check input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 13px;
+  height: 13px;
+  border: 1.5px solid rgba(255,255,255,0.2);
+  border-radius: 3px;
+  background: transparent;
+  cursor: pointer;
+  position: relative;
+  flex-shrink: 0;
+  transition: background 0.15s, border-color 0.15s;
+}
+.ind-check input[type="checkbox"]:checked {
+  background: #b8e036;
+  border-color: #b8e036;
+}
+.ind-check input[type="checkbox"]:checked::after {
+  content: '';
+  position: absolute;
+  left: 2px; top: 0px;
+  width: 5px; height: 8px;
+  border: 2px solid #000;
+  border-top: none;
+  border-left: none;
+  transform: rotate(45deg);
+}
+.ind-check span {
+  font-family: var(--ff-mono);
+  font-size: 0.72rem;
+  color: rgba(255,255,255,0.45);
+  transition: color 0.15s;
+  white-space: nowrap;
+}
+.ind-check:has(input:checked) span {
+  color: rgba(255,255,255,0.85);
+}
+.ind-check:has(input:checked) {
+  border-color: rgba(184,224,54,0.3);
+  background: rgba(184,224,54,0.06);
+}

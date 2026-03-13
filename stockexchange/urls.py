@@ -21,6 +21,17 @@ urlpatterns = [
     path("forgot-password/",            views.forgot_password,   name="forgot_password"),
     path("reset/<uidb64>/<token>/",     views.reset_password,    name="reset_password"),
 
+    # ML Models
     path("forecast/<str:symbol>/", views.forecast_json, name="forecast_json"),
     path('ml-models/', views.ml_models, name='ml_models'),
+
+    # Trading Bot
+    path("robot/",              views.robot_view, name="robot"),
+    path("robot/<str:ticker>/", views.robot_view, name="robot_ticker"),
+    path("api/robot/",          views.robot_api,  name="robot_api"),
+    path("api/robot/deploy/",          views.robot_deploy,  name="robot_deploy"),
+    path("api/robot/stop/",            views.robot_stop,    name="robot_stop"),
+    path("api/robot/history/",         views.robot_history, name="robot_history"),
+    path("api/robot/history/<str:ticker>/", views.robot_history, name="robot_history_ticker"),
+    path('api/robot/backtest/', views.robot_backtest_public, name='robot_backtest_public'),
 ]

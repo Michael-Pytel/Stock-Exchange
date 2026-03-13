@@ -1,6 +1,6 @@
 /* ─── STATE ───────────────────────────────────────────────── */
 let currentTf    = '1M';
-let currentMode  = 'buy';   // 'buy' | 'sell'
+let currentMode  = 'buy';
 let latestPrice  = 0;
 let userBalance  = parseFloat(document.getElementById('live-balance').textContent.replace(/[^0-9.]/g, ''));
 let posShares    = HAS_POS ? parseFloat(document.getElementById('pos-shares').textContent) : 0;
@@ -14,85 +14,430 @@ const companies = {
   TSLA: 'Tesla Inc.', V: 'Visa Inc.',
 };
 
-/* ─── CHART ───────────────────────────────────────────────── */
-const ctx = document.getElementById('stockChart').getContext('2d');
-let chart = null;
+/* ═══════════════════════════════════════════════════════════
+   LIGHTWEIGHT CHARTS — STOCK CHART
+   ═══════════════════════════════════════════════════════════ */
 
-function buildGradient(color) {
-  const g = ctx.createLinearGradient(0, 0, 0, 380);
-  g.addColorStop(0, color + '35');
-  g.addColorStop(1, color + '00');
-  return g;
+const UP   = '#26a69a';
+const DOWN = '#ef5350';
+const LINE = '#b8e036';
+const BG   = '#080808';
+
+let lwChart     = null;
+let volChart    = null;
+let rsiChart    = null;
+let mainSeries  = null;
+let volSeries   = null;
+let allBars     = [];
+let currentCt   = 'line';
+
+// Indicator series
+let indSeries = { sma20: null, sma50: null, ema20: null, bbUpper: null, bbMid: null, bbLower: null };
+let rsiSeries = null;
+
+let chartSyncing = false;
+
+
+let baselinePrice = null;
+let isDraggingBL  = false;
+let earliestTime  = null;   // UNIX seconds of oldest loaded bar
+let isFetchingMore = false; // prevents concurrent fetches
+let noMoreHistory  = false; // set true when API returns nothing new
+
+/* ── Market status ────────────────────────────────────────── */
+function getETNow() {
+  const now  = new Date();
+  const year = now.getUTCFullYear();
+
+  // US DST: starts 2nd Sunday of March at 2am, ends 1st Sunday of November at 2am
+  const dstStart = new Date(Date.UTC(year, 2, 1));   // March 1 UTC
+  dstStart.setUTCDate(1 + (7 - dstStart.getUTCDay()) % 7 + 7); // 2nd Sunday
+  dstStart.setUTCHours(7); // 2am ET = 7am UTC (during EST)
+
+  const dstEnd = new Date(Date.UTC(year, 10, 1));    // November 1 UTC
+  dstEnd.setUTCDate(1 + (7 - dstEnd.getUTCDay()) % 7); // 1st Sunday
+  dstEnd.setUTCHours(6); // 2am ET = 6am UTC (during EDT)
+
+  const isDST   = now >= dstStart && now < dstEnd;
+  const etOffsetMs = (isDST ? -4 : -5) * 3600000;
+  return new Date(now.getTime() + etOffsetMs);
 }
 
-function renderChart(labels, prices) {
-  const isUp      = prices[prices.length - 1] >= prices[0];
-  const lineColor = isUp ? '#b8e036' : '#e05555';
-  if (chart) chart.destroy();
+function updateMarketStatus() {
+  const et  = getETNow();
+  const day  = et.getUTCDay();   // 0=Sun, 6=Sat
+  const mins = et.getUTCHours() * 60 + et.getUTCMinutes();
 
-  chart = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels,
-      datasets: [{
-        data: prices,
-        borderColor: lineColor,
-        borderWidth: 1.5,
-        pointRadius: 0,
-        pointHoverRadius: 4,
-        pointHoverBackgroundColor: lineColor,
-        tension: 0.38,
-        fill: true,
-        backgroundColor: buildGradient(lineColor),
-      }],
+  const dot   = document.getElementById('ms-dot');
+  const label = document.getElementById('ms-label');
+  if (!dot || !label) return;
+
+  if (day === 0 || day === 6) {
+    dot.className = 'ms-dot closed'; label.textContent = 'Market Closed'; return;
+  }
+  if (mins >= 240 && mins < 570)  { dot.className = 'ms-dot pre';    label.textContent = 'Pre-Market';   return; }
+  if (mins >= 570 && mins < 960)  { dot.className = 'ms-dot open';   label.textContent = 'Market Open';  return; }
+  if (mins >= 960 && mins < 1200) { dot.className = 'ms-dot after';  label.textContent = 'After-Hours';  return; }
+  dot.className = 'ms-dot closed'; label.textContent = 'Market Closed';
+}
+updateMarketStatus();
+setInterval(updateMarketStatus, 60000);
+
+/* ── One-time chart init ──────────────────────────────────── */
+function initCharts() {
+  const sharedOpts = {
+    layout:     { background: { color: BG }, textColor: 'rgba(255,255,255,0.28)' },
+    grid:       { vertLines: { color: 'rgba(255,255,255,0.04)' }, horzLines: { color: 'rgba(255,255,255,0.04)' } },
+    crosshair:  {
+      mode: LightweightCharts.CrosshairMode.Normal,
+      vertLine: { color: 'rgba(255,255,255,0.12)', labelBackgroundColor: '#1a1a1a' },
+      horzLine: { color: 'rgba(255,255,255,0.12)', labelBackgroundColor: '#1a1a1a' },
     },
-    options: {
-      responsive: true,
-      interaction: { mode: 'index', intersect: false },
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          backgroundColor: '#111',
-          titleColor: 'rgba(255,255,255,0.45)',
-          bodyColor: '#fff',
-          borderColor: 'rgba(255,255,255,0.07)',
-          borderWidth: 1,
-          padding: 12,
-          titleFont: { family: 'IBM Plex Sans', size: 11 },
-          bodyFont:  { family: 'IBM Plex Mono', size: 14 },
-          callbacks: { label: c => ' $' + c.parsed.y.toFixed(2) },
-        },
-      },
-      scales: {
-        x: {
-          grid: { color: 'rgba(255,255,255,0.04)', drawTicks: false },
-          ticks: { color: '#444', font: { family: 'IBM Plex Mono', size: 11 }, maxTicksLimit: 8, maxRotation: 0 },
-        },
-        y: {
-          position: 'right',
-          grid: { color: 'rgba(255,255,255,0.04)', drawTicks: false },
-          ticks: { color: '#444', font: { family: 'IBM Plex Mono', size: 11 }, callback: v => '$' + v.toFixed(0) },
-        },
-      },
-    },
+    rightPriceScale: { borderColor: 'rgba(255,255,255,0.06)' },
+    timeScale:       { borderColor: 'rgba(255,255,255,0.06)', timeVisible: true, secondsVisible: false },
+    handleScroll:    { mouseWheel: true, pressedMouseMove: true },
+    handleScale:     { mouseWheel: true, pinch: true },
+  };
+
+  lwChart  = LightweightCharts.createChart(document.getElementById('stockChart'),  { ...sharedOpts, height: 400 });
+  volChart = LightweightCharts.createChart(document.getElementById('volumeChart'), {
+    ...sharedOpts,
+    height: 72,
+    rightPriceScale: { visible: false },
+    leftPriceScale:  { visible: false },
+    timeScale:       { visible: false },
+    crosshair:       { vertLine: { labelVisible: false }, horzLine: { visible: false } },
   });
+
+  // Sync scroll/zoom between main and volume chart (logical range — same bar count)
+  lwChart.timeScale().subscribeVisibleLogicalRangeChange(r => {
+    if (chartSyncing || !r) return;
+    chartSyncing = true;
+    volChart.timeScale().setVisibleLogicalRange(r);
+    chartSyncing = false;
+    if (r.from < 10) loadMoreBars();
+  });
+  volChart.timeScale().subscribeVisibleLogicalRangeChange(r => {
+    if (chartSyncing || !r) return;
+    chartSyncing = true;
+    lwChart.timeScale().setVisibleLogicalRange(r);
+    chartSyncing = false;
+  });
+
+  setupTooltip();
+  setupBaselineDrag();
+}
+
+/* ── Build / replace series on every data load ────────────── */
+function buildSeries(bars, ct) {
+  if (!lwChart) return;
+
+  // Reset load-more state whenever we do a full fresh load
+  noMoreHistory = false;
+  earliestTime  = bars.length ? bars[0].time : null;
+
+  // Remove old main series
+  if (mainSeries) {
+    try { lwChart.removeSeries(mainSeries); } catch(e) {}
+    mainSeries = null;
+  }
+  // Remove and recreate vol series to avoid stale state
+  if (volSeries) {
+    try { volChart.removeSeries(volSeries); } catch(e) {}
+    volSeries = null;
+  }
+
+  baselinePrice = null;
+  document.getElementById('baseline-hint').style.display = 'none';
+
+  const isUp = bars.length > 1 && bars[bars.length - 1].close >= bars[0].close;
+
+  /* — Main series — */
+  if (ct === 'candle') {
+    mainSeries = lwChart.addCandlestickSeries({
+      upColor: UP, downColor: DOWN,
+      borderUpColor: UP, borderDownColor: DOWN,
+      wickUpColor: UP, wickDownColor: DOWN,
+    });
+    mainSeries.setData(bars.map(b => ({ time: b.time, open: b.open, high: b.high, low: b.low, close: b.close })));
+
+  } else if (ct === 'mountain') {
+    const col = isUp ? LINE : DOWN;
+    mainSeries = lwChart.addAreaSeries({ lineColor: col, topColor: col + '30', bottomColor: col + '00', lineWidth: 2 });
+    mainSeries.setData(bars.map(b => ({ time: b.time, value: b.close })));
+
+  } else if (ct === 'baseline') {
+    baselinePrice = bars[Math.floor(bars.length / 2)]?.close || bars[0]?.close;
+    mainSeries = lwChart.addBaselineSeries({
+      baseValue:       { type: 'price', price: baselinePrice },
+      topLineColor:    UP,   topFillColor1: UP   + '28', topFillColor2: UP   + '05',
+      bottomLineColor: DOWN, bottomFillColor1: DOWN + '05', bottomFillColor2: DOWN + '28',
+      lineWidth: 2,
+    });
+    mainSeries.setData(bars.map(b => ({ time: b.time, value: b.close })));
+    baselineGuide = null;
+    setBaselineAt(baselinePrice);
+    document.getElementById('baseline-hint').style.display = 'block';
+
+  } else {
+    const col = isUp ? LINE : DOWN;
+    mainSeries = lwChart.addLineSeries({ color: col, lineWidth: 2, crosshairMarkerBackgroundColor: col });
+    mainSeries.setData(bars.map(b => ({ time: b.time, value: b.close })));
+  }
+
+  /* — Volume series (recreated fresh each time) — */
+  volSeries = volChart.addHistogramSeries({
+    priceFormat:  { type: 'volume' },
+    scaleMargins: { top: 0.1, bottom: 0 },
+    lastValueVisible: false,
+    priceLineVisible: false,
+  });
+  volSeries.setData(bars.map(b => ({
+    time:  b.time,
+    value: b.volume,
+    color: b.close >= b.open ? UP + '60' : DOWN + '60',
+  })));
+
+  lwChart.timeScale().fitContent();
+  volChart.timeScale().fitContent();
+  if (rsiChart) rsiChart.timeScale().fitContent();
+}
+
+/* ── Lightweight update of series data (no series recreation) */
+function setSeriesData(bars) {
+  if (!mainSeries || !volSeries) return;
+  const ct = currentCt;
+  if (ct === 'candle') {
+    mainSeries.setData(bars.map(b => ({ time: b.time, open: b.open, high: b.high, low: b.low, close: b.close })));
+  } else {
+    mainSeries.setData(bars.map(b => ({ time: b.time, value: b.close })));
+  }
+  volSeries.setData(bars.map(b => ({
+    time:  b.time,
+    value: b.volume,
+    color: b.close >= b.open ? UP + '60' : DOWN + '60',
+  })));
+}
+
+/* ── Load older bars when user scrolls to the left edge ───── */
+async function loadMoreBars() {
+  if (isFetchingMore || noMoreHistory || !earliestTime) return;
+  isFetchingMore = true;
+
+  // Convert earliestTime (UNIX s) to ISO for the before= param
+  const beforeISO = new Date(earliestTime * 1000).toISOString().replace('.000Z', 'Z');
+
+  try {
+    const resp = await fetch(`/api/stock/${SYMBOL}/?tf=${currentTf}&before=${beforeISO}`);
+    const data = await resp.json();
+    if (data.error || !data.bars?.length) { noMoreHistory = true; return; }
+
+    // Parse bars same way as loadStock
+    const newBars = data.bars.map(b => ({
+      time:   Math.floor(new Date(b.t).getTime() / 1000),
+      open:   b.o  ?? b.open  ?? b.c ?? b.close,
+      high:   b.h  ?? b.high  ?? b.c ?? b.close,
+      low:    b.l  ?? b.low   ?? b.c ?? b.close,
+      close:  b.c  ?? b.close,
+      volume: b.v  ?? b.volume ?? 0,
+    }))
+    .filter(b => b.time < earliestTime)  // only bars older than what we have
+    .sort((a, b) => a.time - b.time);
+
+    if (!newBars.length) { noMoreHistory = true; return; }
+
+    // Remember how many new bars we're prepending so we can shift the viewport
+    const addedCount = newBars.length;
+
+    // Save current visible logical range
+    const prevRange = lwChart.timeScale().getVisibleLogicalRange();
+
+    // Merge and sort
+    allBars = [...newBars, ...allBars];
+    earliestTime = allBars[0].time;
+
+    if (!data.has_more) noMoreHistory = true;
+
+    // Push data to series without recreating them
+    setSeriesData(allBars);
+    renderIndicators(allBars);
+
+    // Restore the viewport shifted right by the number of prepended bars
+    // so the user's current view position doesn't jump
+    if (prevRange) {
+      lwChart.timeScale().setVisibleLogicalRange({
+        from: prevRange.from + addedCount,
+        to:   prevRange.to  + addedCount,
+      });
+      volChart.timeScale().setVisibleLogicalRange({
+        from: prevRange.from + addedCount,
+        to:   prevRange.to  + addedCount,
+      });
+      // RSI syncs via time range subscriber automatically
+    }
+
+  } catch(e) {
+    console.error('loadMoreBars error:', e);
+  } finally {
+    isFetchingMore = false;
+  }
+}
+
+/* ── Move baseline fill + dashed line to a new price ─────── */
+function setBaselineAt(price) {
+  if (!mainSeries) return;
+  // Update the fill split
+  mainSeries.applyOptions({ baseValue: { type: 'price', price } });
+  // Remove old guide line and create a new one at the new price
+  if (baselineGuide) {
+    try { mainSeries.removePriceLine(baselineGuide); } catch(e) {}
+  }
+  baselineGuide = mainSeries.createPriceLine({
+    price,
+    color: 'rgba(255,255,255,0.4)',
+    lineWidth: 1,
+    lineStyle: LightweightCharts.LineStyle.Dashed,
+    axisLabelVisible: true,
+    title: 'baseline',
+  });
+  baselinePrice = price;
+}
+
+/* ── Baseline drag via mouse events ──────────────────────── */
+function setupBaselineDrag() {
+  const el = document.getElementById('stockChart');
+
+  el.addEventListener('mousedown', e => {
+    if (currentCt !== 'baseline' || !mainSeries || baselinePrice === null) return;
+    const rect   = el.getBoundingClientRect();
+    const mouseY = e.clientY - rect.top;
+    const blY    = mainSeries.priceToCoordinate(baselinePrice);
+    if (blY === null) return;
+    if (Math.abs(mouseY - blY) < 12) {
+      isDraggingBL = true;
+      lwChart.applyOptions({ handleScroll: false, handleScale: false });
+      el.style.cursor = 'ns-resize';
+      e.preventDefault();
+    }
+  });
+
+  window.addEventListener('mousemove', e => {
+    if (!isDraggingBL || !mainSeries) return;
+    const rect   = document.getElementById('stockChart').getBoundingClientRect();
+    const mouseY = e.clientY - rect.top;
+    const newPrice = mainSeries.coordinateToPrice(mouseY);
+    if (newPrice === null) return;
+    setBaselineAt(newPrice);
+  });
+
+  window.addEventListener('mouseup', () => {
+    if (!isDraggingBL) return;
+    isDraggingBL = false;
+    lwChart.applyOptions({ handleScroll: true, handleScale: true });
+    document.getElementById('stockChart').style.cursor = 'default';
+  });
+
+  // Cursor hint when hovering near baseline
+  el.addEventListener('mousemove', e => {
+    if (currentCt !== 'baseline' || !mainSeries || baselinePrice === null || isDraggingBL) return;
+    const rect   = el.getBoundingClientRect();
+    const mouseY = e.clientY - rect.top;
+    const blY    = mainSeries.priceToCoordinate(baselinePrice);
+    if (blY !== null && Math.abs(mouseY - blY) < 12) {
+      el.style.cursor = 'ns-resize';
+    } else {
+      el.style.cursor = 'default';
+    }
+  });
+}
+
+/* ── OHLCV Tooltip ────────────────────────────────────────── */
+function setupTooltip() {
+  const tt = document.getElementById('chart-tooltip');
+
+  lwChart.subscribeCrosshairMove(param => {
+    if (!param.time || !param.seriesData?.size) { tt.style.display = 'none'; return; }
+
+    let bar = null;
+    for (const [, v] of param.seriesData) { bar = v; break; }
+    if (!bar) { tt.style.display = 'none'; return; }
+
+    // Find full OHLCV from our allBars cache
+    const full = allBars.find(b => b.time === param.time) || bar;
+    const isUp = (full.close ?? full.value) >= (full.open ?? full.value);
+    const close = full.close ?? full.value;
+    const open  = full.open  ?? close;
+    const high  = full.high  ?? close;
+    const low   = full.low   ?? close;
+    const vol   = full.volume ?? 0;
+
+    document.getElementById('ct-date').textContent = new Date(param.time * 1000)
+      .toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    document.getElementById('ct-o').textContent = '$' + open.toFixed(2);
+    document.getElementById('ct-h').textContent = '$' + high.toFixed(2);
+    document.getElementById('ct-l').textContent = '$' + low.toFixed(2);
+    document.getElementById('ct-c').textContent = '$' + close.toFixed(2);
+    document.getElementById('ct-c').style.color  = isUp ? UP : DOWN;
+    document.getElementById('ct-v').textContent = fmtVol(vol);
+    tt.style.display = 'block';
+  });
+}
+
+function fmtVol(v) {
+  if (v >= 1e9) return (v / 1e9).toFixed(2) + 'B';
+  if (v >= 1e6) return (v / 1e6).toFixed(2) + 'M';
+  if (v >= 1e3) return (v / 1e3).toFixed(1) + 'K';
+  return String(v);
+}
+
+/* ── Chart type switcher ──────────────────────────────────── */
+document.getElementById('chart-type-bar').addEventListener('click', e => {
+  const btn = e.target.closest('.ct-btn');
+  if (!btn) return;
+  document.querySelectorAll('.ct-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentCt = btn.dataset.ct;
+  if (allBars.length) {
+    buildSeries(allBars, currentCt);
+    renderIndicators(allBars);
+  }
+});
+
+/* ── renderChart called from loadStock ────────────────────── */
+function renderChart(bars) {
+  allBars = bars;
+  if (!lwChart) initCharts();
+  buildSeries(bars, currentCt);
+  renderIndicators(bars);
 }
 
 /* ─── LOAD STOCK DATA ─────────────────────────────────────── */
 async function loadStock(symbol, tf) {
   const loading = document.getElementById('chart-loading');
   loading.classList.add('visible');
+  // Reset infinite scroll state for fresh load
+  isFetchingMore = false;
+  noMoreHistory  = false;
 
   try {
     const resp = await fetch(`/api/stock/${symbol}/?tf=${tf}`);
     const data = await resp.json();
     if (data.error || !data.bars?.length) throw new Error(data.error || 'No data');
 
-    const bars   = data.bars;
-    const labels = bars.map(b => b.t);
-    const prices = bars.map(b => b.c);
-    latestPrice  = prices[prices.length - 1];
-    const prev   = prices[0];
+    const bars = data.bars;
+
+    // Build full OHLCV objects; Alpaca may use b.o/b.h/b.l/b.c/b.v or b.open/b.high etc.
+    const lwBars = bars.map(b => ({
+      time:   Math.floor(new Date(b.t).getTime() / 1000),
+      open:   b.o  ?? b.open  ?? b.c ?? b.close,
+      high:   b.h  ?? b.high  ?? b.c ?? b.close,
+      low:    b.l  ?? b.low   ?? b.c ?? b.close,
+      close:  b.c  ?? b.close,
+      volume: b.v  ?? b.volume ?? 0,
+    })).sort((a, b) => a.time - b.time);
+
+    latestPrice = lwBars[lwBars.length - 1].close;
+    const prev  = lwBars[0].close;
     const change = latestPrice - prev;
     const pct    = (change / prev) * 100;
     const isUp   = change >= 0;
@@ -107,13 +452,14 @@ async function loadStock(symbol, tf) {
 
     document.getElementById('order-price').textContent = '$' + latestPrice.toFixed(2);
 
-    renderChart(labels, prices);
+    renderChart(lwBars);
     updateEstimate();
     updatePositionBox();
 
   } catch(e) {
     document.getElementById('chart-price').textContent  = 'Unavailable';
     document.getElementById('chart-change').textContent = 'Could not load data';
+    console.error('loadStock error:', e);
   } finally {
     loading.classList.remove('visible');
   }
@@ -247,6 +593,202 @@ if (overlay) {
     window.location.href = '/logout/';
   });
 }
+
+/* ═══════════════════════════════════════════════════════════
+   TECHNICAL INDICATORS
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── Compute helpers ──────────────────────────────────────── */
+function calcSMA(bars, period) {
+  return bars.map((b, i) => {
+    if (i < period - 1) return null;
+    const sum = bars.slice(i - period + 1, i + 1).reduce((a, x) => a + x.close, 0);
+    return { time: b.time, value: sum / period };
+  }).filter(Boolean);
+}
+
+function calcEMA(bars, period) {
+  const k = 2 / (period + 1);
+  const result = [];
+  let ema = null;
+  for (const b of bars) {
+    if (ema === null) { ema = b.close; }
+    else              { ema = b.close * k + ema * (1 - k); }
+    result.push({ time: b.time, value: ema });
+  }
+  // Skip the warmup period to avoid noisy start
+  return result.slice(period);
+}
+
+function calcBB(bars, period = 20, mult = 2) {
+  const upper = [], mid = [], lower = [];
+  for (let i = period - 1; i < bars.length; i++) {
+    const slice = bars.slice(i - period + 1, i + 1).map(b => b.close);
+    const mean  = slice.reduce((a, v) => a + v, 0) / period;
+    const std   = Math.sqrt(slice.reduce((a, v) => a + (v - mean) ** 2, 0) / period);
+    upper.push({ time: bars[i].time, value: mean + mult * std });
+    mid.push(  { time: bars[i].time, value: mean });
+    lower.push({ time: bars[i].time, value: mean - mult * std });
+  }
+  return { upper, mid, lower };
+}
+
+function calcRSI(bars, period = 14) {
+  const result = [];
+  let avgGain = 0, avgLoss = 0;
+  for (let i = 1; i <= period; i++) {
+    const d = bars[i].close - bars[i - 1].close;
+    if (d > 0) avgGain += d; else avgLoss += -d;
+  }
+  avgGain /= period; avgLoss /= period;
+  for (let i = period; i < bars.length; i++) {
+    if (i > period) {
+      const d = bars[i].close - bars[i - 1].close;
+      avgGain = (avgGain * (period - 1) + Math.max(d, 0)) / period;
+      avgLoss = (avgLoss * (period - 1) + Math.max(-d, 0)) / period;
+    }
+    const rs  = avgLoss === 0 ? 100 : avgGain / avgLoss;
+    const rsi = 100 - 100 / (1 + rs);
+    result.push({ time: bars[i].time, value: rsi });
+  }
+  // Pad the front with the earliest valid value so bar count matches main chart
+  // This lets logical-range sync work perfectly (same indices as main + vol)
+  while (result.length < bars.length) {
+    result.unshift({ time: bars[result.length > 0 ? bars.length - result.length - 1 : 0].time, value: result[0]?.value ?? 50 });
+  }
+  return result;
+}
+
+/* ── Remove all indicator series ─────────────────────────── */
+function clearIndicators() {
+  for (const key of Object.keys(indSeries)) {
+    if (indSeries[key]) {
+      try { lwChart.removeSeries(indSeries[key]); } catch(e) {}
+      indSeries[key] = null;
+    }
+  }
+  if (rsiSeries && rsiChart) {
+    try { rsiChart.removeSeries(rsiSeries); } catch(e) {}
+    rsiSeries = null;
+  }
+}
+
+/* ── Render indicators based on checkbox state ────────────── */
+function renderIndicators(bars) {
+  if (!lwChart || !bars.length) return;
+  clearIndicators();
+
+  const sma20On = document.getElementById('ind-sma20')?.checked;
+  const sma50On = document.getElementById('ind-sma50')?.checked;
+  const ema20On = document.getElementById('ind-ema20')?.checked;
+  const bbOn    = document.getElementById('ind-bb')?.checked;
+  const rsiOn   = document.getElementById('ind-rsi')?.checked;
+
+  if (sma20On) {
+    indSeries.sma20 = lwChart.addLineSeries({
+      color: '#f59e0b', lineWidth: 1, crosshairMarkerVisible: false,
+      lastValueVisible: true, priceLineVisible: false,
+      title: 'SMA20',
+    });
+    indSeries.sma20.setData(calcSMA(bars, 20));
+  }
+
+  if (sma50On) {
+    indSeries.sma50 = lwChart.addLineSeries({
+      color: '#a78bfa', lineWidth: 1, crosshairMarkerVisible: false,
+      lastValueVisible: true, priceLineVisible: false,
+      title: 'SMA50',
+    });
+    indSeries.sma50.setData(calcSMA(bars, 50));
+  }
+
+  if (ema20On) {
+    indSeries.ema20 = lwChart.addLineSeries({
+      color: '#38bdf8', lineWidth: 1, crosshairMarkerVisible: false,
+      lastValueVisible: true, priceLineVisible: false,
+      title: 'EMA20',
+    });
+    indSeries.ema20.setData(calcEMA(bars, 20));
+  }
+
+  if (bbOn) {
+    const { upper, mid, lower } = calcBB(bars);
+    const bbColor = 'rgba(232, 121, 249, 0.85)';
+    indSeries.bbUpper = lwChart.addLineSeries({
+      color: bbColor, lineWidth: 1.5, lineStyle: LightweightCharts.LineStyle.Dashed,
+      crosshairMarkerVisible: false, lastValueVisible: true, priceLineVisible: false,
+      title: 'BB+',
+    });
+    indSeries.bbMid = lwChart.addLineSeries({
+      color: 'rgba(232, 121, 249, 0.3)', lineWidth: 1, lineStyle: LightweightCharts.LineStyle.Dotted,
+      crosshairMarkerVisible: false, lastValueVisible: false, priceLineVisible: false,
+      title: 'BBmid',
+    });
+    indSeries.bbLower = lwChart.addLineSeries({
+      color: bbColor, lineWidth: 1.5, lineStyle: LightweightCharts.LineStyle.Dashed,
+      crosshairMarkerVisible: false, lastValueVisible: true, priceLineVisible: false,
+      title: 'BB−',
+    });
+    indSeries.bbUpper.setData(upper);
+    indSeries.bbMid.setData(mid);
+    indSeries.bbLower.setData(lower);
+  }
+
+  // RSI in its own pane — synced via logical range same as volChart
+  const rsiEl = document.getElementById('rsiChart');
+  if (rsiOn) {
+    rsiEl.style.display = 'block';
+    if (!rsiChart) {
+      rsiChart = LightweightCharts.createChart(rsiEl, {
+        layout:     { background: { color: BG }, textColor: 'rgba(255,255,255,0.28)' },
+        grid:       { vertLines: { color: 'rgba(255,255,255,0.04)' }, horzLines: { color: 'rgba(255,255,255,0.04)' } },
+        crosshair:  { vertLine: { labelVisible: false }, horzLine: { visible: false } },
+        rightPriceScale: { borderColor: 'rgba(255,255,255,0.06)', scaleMargins: { top: 0.05, bottom: 0.05 } },
+        timeScale:  { visible: false },
+        handleScroll: { mouseWheel: false, pressedMouseMove: false },
+        handleScale:  { mouseWheel: false, pinch: false },
+      });
+      rsiChart.resize(rsiEl.clientWidth, 100);
+
+      // Mirror volChart exactly — logical range
+      lwChart.timeScale().subscribeVisibleLogicalRangeChange(r => {
+        if (chartSyncing || !r || !rsiChart) return;
+        rsiChart.timeScale().setVisibleLogicalRange(r);
+      });
+    }
+
+    rsiSeries = rsiChart.addLineSeries({
+      color: '#f97316', lineWidth: 1.5,
+      crosshairMarkerVisible: false,
+      lastValueVisible: true,
+      priceLineVisible: false,
+      autoscaleInfoProvider: (original) => {
+        const res = original();
+        const minV = Math.min(res?.priceRange?.minValue ?? 30, 20);
+        const maxV = Math.max(res?.priceRange?.maxValue ?? 70, 80);
+        return { priceRange: { minValue: minV, maxValue: maxV } };
+      },
+      title: 'RSI14',
+    });
+
+    rsiSeries.createPriceLine({ price: 70, color: 'rgba(239,83,80,0.55)',  lineWidth: 1, lineStyle: LightweightCharts.LineStyle.Dashed, axisLabelVisible: true,  title: '70' });
+    rsiSeries.createPriceLine({ price: 30, color: 'rgba(38,166,154,0.55)', lineWidth: 1, lineStyle: LightweightCharts.LineStyle.Dashed, axisLabelVisible: true,  title: '30' });
+    rsiSeries.createPriceLine({ price: 50, color: 'rgba(255,255,255,0.1)', lineWidth: 1, lineStyle: LightweightCharts.LineStyle.Dotted, axisLabelVisible: false });
+
+    rsiSeries.setData(calcRSI(bars));
+
+  } else {
+    rsiEl.style.display = 'none';
+    if (rsiChart) { rsiChart.remove(); rsiChart = null; }
+  }
+}
+
+/* ── Wire up checkboxes ───────────────────────────────────── */
+['ind-sma20','ind-sma50','ind-ema20','ind-bb','ind-rsi'].forEach(id => {
+  document.getElementById(id)?.addEventListener('change', () => {
+    if (allBars.length) renderIndicators(allBars);
+  });
+});
 
 /* ─── INIT ────────────────────────────────────────────────── */
 loadStock(SYMBOL, currentTf);

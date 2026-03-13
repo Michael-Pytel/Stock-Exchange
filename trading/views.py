@@ -45,20 +45,21 @@ COMPANY_NAMES = {
 }
 
 TIMEFRAME_CONFIG = {
-    "1D":  (1,    "5Min",  78,  "HH:MM"),
-    "1W":  (7,    "1Hour", 120, "date"),
-    "1M":  (30,   "1Day",  30,  "date"),
-    "3M":  (90,   "1Day",  90,  "date"),
-    "YTD": (None, "1Day",  365, "date"),
-    "1Y":  (365,  "1Day",  365, "date"),
-    "5Y":  (1825, "1Week", 260, "date"),
-    "ALL": (3650, "1Month",120, "date"),
+    "1D":  (1,    "5Min",   390,  "HH:MM"),
+    "1W":  (7,    "1Hour",  168,  "date"),
+    "1M":  (30,   "1Day",   31,   "date"),
+    "3M":  (90,   "1Day",   92,   "date"),
+    "YTD": (None, "1Day",   365,  "date"),
+    "1Y":  (365,  "1Day",   365,  "date"),
+    "5Y":  (1825, "1Week",  261,  "date"),
+    "ALL": (7300, "1Month", 1000, "date"),
 }
 
 
 # ── Home ─────────────────────────────────────────────────────────
 def home(request):
-    return render(request, "trading/home.html", {"stocks": STOCKS})
+    import json
+    return render(request, "trading/home.html", {"stocks": STOCKS, "stocks_json": json.dumps(STOCKS)})
 
 
 # ── Stock Data API ───────────────────────────────────────────────
@@ -72,7 +73,16 @@ def stock_data(request, symbol):
         tf = "1M"
 
     delta_days, alpaca_tf, limit, _ = TIMEFRAME_CONFIG[tf]
-    end   = datetime.utcnow()
+
+    before_str = request.GET.get("before")
+    if before_str:
+        try:
+            end = datetime.fromisoformat(before_str.replace("Z", ""))
+        except ValueError:
+            end = datetime.utcnow()
+    else:
+        end = datetime.utcnow()
+
     start = datetime(end.year, 1, 1) if tf == "YTD" else end - timedelta(days=delta_days)
 
     headers = {
@@ -89,6 +99,44 @@ def stock_data(request, symbol):
     }
 
     try:
+        # For long timeframes IEX only goes back to 2020-07-01.
+        # The robot's fetcher already downloaded full history as parquet — use that.
+        if tf in ("ALL", "5Y"):
+            import glob
+            bot_path = config("TRADING_BOT_PATH")
+            data_dir = os.path.join(bot_path, "market_data")
+            parquet  = os.path.join(data_dir, f"{symbol}.parquet")
+            if not os.path.exists(parquet):
+                raise ValueError(f"No parquet data found for {symbol} at {parquet}")
+
+            df = pd.read_parquet(parquet)
+            # date is a plain column, not the index
+            df["date"] = pd.to_datetime(df["date"])
+            df = df.set_index("date").sort_index()
+
+            # Resample: monthly for ALL, weekly for 5Y
+            freq = "ME" if tf == "ALL" else "W"
+            df_rs = df["close"].resample(freq).ohlc()
+            df_rs["volume"] = df["volume"].resample(freq).sum()
+
+            if tf == "5Y":
+                cutoff = pd.Timestamp.now() - pd.DateOffset(years=5)
+                df_rs  = df_rs[df_rs.index >= cutoff]
+
+            result = [
+                {
+                    "t": idx.isoformat(),
+                    "o": round(float(row["open"]),  4),
+                    "h": round(float(row["high"]),  4),
+                    "l": round(float(row["low"]),   4),
+                    "c": round(float(row["close"]), 4),
+                    "v": int(row["volume"]),
+                }
+                for idx, row in df_rs.iterrows()
+                if not pd.isna(row["close"])
+            ]
+            return JsonResponse({"symbol": symbol, "bars": result, "tf": tf, "has_more": False})
+
         resp = requests.get(
             f"{ALPACA_DATA_URL}/stocks/{symbol}/bars",
             headers=headers, params=params, timeout=10,
@@ -96,13 +144,8 @@ def stock_data(request, symbol):
         resp.raise_for_status()
         bars = resp.json().get("bars", [])
 
-        def fmt(t):
-            if tf == "1D":              return t[11:16]
-            elif tf in ("5Y", "ALL"):   return t[:7]
-            else:                       return t[:10]
-
-        result = [{"t": fmt(b["t"]), "c": b["c"], "o": b["o"], "h": b["h"], "l": b["l"]} for b in bars]
-        return JsonResponse({"symbol": symbol, "bars": result, "tf": tf})
+        result = [{"t": b["t"], "c": b["c"], "o": b["o"], "h": b["h"], "l": b["l"], "v": b.get("v", 0)} for b in bars]
+        return JsonResponse({"symbol": symbol, "bars": result, "tf": tf, "has_more": len(bars) >= limit})
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
 
@@ -145,13 +188,10 @@ def trading_view(request, symbol="AAPL"):
     if symbol not in STOCKS:
         symbol = "AAPL"
 
-    # Get user's position in this stock (if any)
     try:
         position = Position.objects.get(user=request.user, symbol=symbol)
     except Position.DoesNotExist:
         position = None
-
-   
 
     context = {
         "stocks":        STOCKS,
@@ -179,7 +219,6 @@ def accept_disclaimer(request):
 def portfolio_view(request):
     positions = Position.objects.filter(user=request.user)
 
-    # Enrich each position with live price
     enriched = []
     total_invested = Decimal("0")
     total_value    = Decimal("0")
@@ -213,12 +252,12 @@ def portfolio_view(request):
     total_pnl_pct = (float(total_pnl) / float(total_invested) * 100) if total_invested else 0
 
     context = {
-        "positions":     enriched,
-        "balance":       request.user.demo_balance,
-        "total_value":   float(total_value),
-        "total_invested":float(total_invested),
-        "total_pnl":     float(total_pnl),
-        "total_pnl_pct": total_pnl_pct,
+        "positions":      enriched,
+        "balance":        request.user.demo_balance,
+        "total_value":    float(total_value),
+        "total_invested": float(total_invested),
+        "total_pnl":      float(total_pnl),
+        "total_pnl_pct":  total_pnl_pct,
         "portfolio_total": float(request.user.demo_balance) + float(total_value),
     }
     return render(request, "trading/portfolio.html", context)
@@ -243,14 +282,13 @@ def buy_stock(request):
     if price is None:
         return JsonResponse({"error": "Could not fetch current price."}, status=503)
 
-    price   = Decimal(str(price))
-    cost    = shares * price
-    user    = request.user
+    price = Decimal(str(price))
+    cost  = shares * price
+    user  = request.user
 
     if user.demo_balance < cost:
         return JsonResponse({"error": "Insufficient demo balance."}, status=400)
 
-    # Update or create position (average up)
     pos, created = Position.objects.get_or_create(
         user=user, symbol=symbol,
         defaults={"shares": shares, "avg_buy_price": price},
@@ -297,13 +335,13 @@ def sell_stock(request):
     if shares > pos.shares:
         return JsonResponse({"error": "Not enough shares to sell."}, status=400)
 
-    price   = _get_latest_price(symbol)
+    price = _get_latest_price(symbol)
     if price is None:
         return JsonResponse({"error": "Could not fetch current price."}, status=503)
 
-    price   = Decimal(str(price))
+    price    = Decimal(str(price))
     proceeds = shares * price
-    user    = request.user
+    user     = request.user
 
     pos.shares -= shares
     if pos.shares == 0:
@@ -490,7 +528,8 @@ def reset_password(request, uidb64, token):
 
     return render(request, "trading/reset_password.html", {"uidb64": uidb64, "token": token})
 
-# ---------------- Autogluon model load ----------------
+
+# ── Autogluon model load ──────────────────────────────────────────
 def _get_predictor():
     global _predictor_cache
     if _predictor_cache is None:
@@ -499,11 +538,6 @@ def _get_predictor():
 
 
 def _fetch_for_autogluon(ticker, past_days=1200):
-    """
-    Pobiera dane z Alpaca i zwraca TimeSeriesDataFrame gotowy do predict().
-    Zakłada że masz funkcję add_features() w preprocessing.py obok views.py
-    lub zamiast niej możesz usunąć tę linię jeśli nie używasz feature engineeringu.
-    """
     from autogluon.timeseries import TimeSeriesDataFrame
     import pandas as pd
     end   = datetime.utcnow()
@@ -546,7 +580,7 @@ def _fetch_for_autogluon(ticker, past_days=1200):
     if autogluon_dir not in sys.path:
         sys.path.insert(0, autogluon_dir)
 
-    from preprocessing import add_features
+    from trading.autogluon_models.preprocessing import add_features
     df = add_features(df)
 
     ts_data = TimeSeriesDataFrame.from_data_frame(
@@ -554,12 +588,9 @@ def _fetch_for_autogluon(ticker, past_days=1200):
     )
     return ts_data
 
+
 @login_required(login_url="/login/")
 def forecast_json(request, symbol="AAPL"):
-    """
-    GET /forecast/<symbol>/
-    Zwraca JSON z historią i prognozą kwantylową do narysowania w Chart.js.
-    """
     import pandas as pd
 
     symbol = symbol.upper()
@@ -575,13 +606,11 @@ def forecast_json(request, symbol="AAPL"):
         future     = forecast.loc[symbol]
         target_col = predictor.target
 
-        # Historia — daty i wartości
         history_out = [
             {"date": str(idx.date()), "value": round(float(row[target_col]), 6)}
             for idx, row in history.iterrows()
         ]
 
-        # Forecast — kwantyle dla każdego dnia
         forecast_out = []
         for idx, row in future.iterrows():
             forecast_out.append({
@@ -606,65 +635,126 @@ def forecast_json(request, symbol="AAPL"):
 
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
-    
+
+
+@login_required
+def robot_view(request, ticker="AAPL"):
+    ticker = ticker.upper()
+    if ticker not in STOCKS:
+        ticker = "AAPL"
+    return render(request, "trading/robot.html", {
+        "stocks":   STOCKS,
+        "symbol":   ticker,
+        "company":  COMPANY_NAMES.get(ticker, ticker),
+        "balance":  request.user.demo_balance,
+    })
+
+
+def robot_backtest_public(request):
+    """Public endpoint — backtest only, no signal (no auth required).
+       Used by the homepage to show real training results to all visitors."""
+    if request.method != "POST":
+        return JsonResponse({"error": "POST required"}, status=405)
+
+    import json
+    from trading.robot_engine import get_backtest
+
+    try:
+        body = json.loads(request.body)
+    except json.JSONDecodeError:
+        return JsonResponse({"error": "Invalid JSON"}, status=400)
+
+    ticker       = body.get("ticker", "AAPL").upper()
+    risk_profile = body.get("risk_profile", "aggressive")
+
+    if ticker not in STOCKS:
+        return JsonResponse({"error": f"Unknown ticker: {ticker}"}, status=400)
+    if risk_profile not in ("aggressive", "conservative"):
+        return JsonResponse({"error": "risk_profile must be aggressive or conservative"}, status=400)
+
+    return JsonResponse(get_backtest(ticker, risk_profile))
+
+
+@login_required
+def robot_api(request):
+    if request.method != "POST":
+        return JsonResponse({"error": "POST required"}, status=405)
+
+    import json
+    from trading.robot_engine import get_signal, get_backtest
+
+    try:
+        body = json.loads(request.body)
+    except json.JSONDecodeError:
+        return JsonResponse({"error": "Invalid JSON"}, status=400)
+
+    ticker       = body.get("ticker", "AAPL").upper()
+    risk_profile = body.get("risk_profile", "aggressive")
+    mode         = body.get("mode", "signal")
+
+    if ticker not in STOCKS:
+        return JsonResponse({"error": f"Unknown ticker: {ticker}"}, status=400)
+    if risk_profile not in ("aggressive", "conservative"):
+        return JsonResponse({"error": "risk_profile must be aggressive or conservative"}, status=400)
+
+    if mode == "signal":
+        return JsonResponse(get_signal(ticker, risk_profile))
+    elif mode == "backtest":
+        return JsonResponse(get_backtest(ticker, risk_profile))
+    else:
+        return JsonResponse({"error": f"Unknown mode: {mode}"}, status=400)
+
 
 import csv
 import os
 from django.shortcuts import render
 from django.conf import settings
 
-# Ścieżka do folderu z CSV-ami — dostosuj do swojej struktury projektu
 CSV_DIR = os.path.join(settings.BASE_DIR, "trading", "static", "trading", "csv")
 
 
 def _read_csv(filename):
-    """Wczytuje CSV jako listę słowników."""
     path = os.path.join(CSV_DIR, filename)
     with open(path, newline="", encoding="utf-8") as f:
         return list(csv.DictReader(f))
 
 
 def ml_models(request):
-    # ── Wczytaj wszystkie CSV ──────────────────────────────────
-    backtest_rows  = _read_csv("backtest_summary.csv")   # Ticker, Mean_MASE, Mean_RMSE, Mean WQL
-    hit_ratio_rows = _read_csv("hit_ratio_backtest.csv")          # Ticker, Hit Ratio
-    winkler_rows   = _read_csv("winkler_per_ticker.csv")     # item_id, Winkler Score (0.1-0.9), Winkler Normalized
-    coverage_rows  = _read_csv("coverage_results.csv")   # jedna linia z coverage
+    backtest_rows  = _read_csv("backtest_summary.csv")
+    hit_ratio_rows = _read_csv("hit_ratio_backtest.csv")
+    winkler_rows   = _read_csv("winkler_per_ticker.csv")
+    coverage_rows  = _read_csv("coverage_results.csv")
 
-    # ── Zbuduj słownik per-ticker ──────────────────────────────
-    hit_map     = {r["Ticker"]: float(r["Hit Ratio"])           for r in hit_ratio_rows}
-    winkler_map = {r["item_id"]: r                              for r in winkler_rows}
+    hit_map     = {r["Ticker"]: float(r["Hit Ratio"]) for r in hit_ratio_rows}
+    winkler_map = {r["item_id"]: r                    for r in winkler_rows}
 
     ticker_data = {}
     for row in backtest_rows:
         ticker = row["Ticker"]
         w      = winkler_map.get(ticker, {})
         ticker_data[ticker] = {
-            "mase":          float(row["Mean_MASE"]),
-            "rmse":          float(row["Mean_RMSE"]),
-            "wql":           float(row["Mean WQL"]),
-            "hit_ratio":     hit_map.get(ticker, 0.0),
-            "winkler":       float(w.get("Winkler Score (0.1-0.9)", 0)),
-            "winkler_norm":  float(w.get("Winkler Normalized", 0)),
+            "mase":         float(row["Mean_MASE"]),
+            "rmse":         float(row["Mean_RMSE"]),
+            "wql":          float(row["Mean WQL"]),
+            "hit_ratio":    hit_map.get(ticker, 0.0),
+            "winkler":      float(w.get("Winkler Score (0.1-0.9)", 0)),
+            "winkler_norm": float(w.get("Winkler Normalized", 0)),
         }
 
-    # ── Dodaj pola formatujące dla template ───────────────────
     for ticker, d in ticker_data.items():
-        hr = d["hit_ratio"]
+        hr   = d["hit_ratio"]
         diff = hr - 0.5
-        d["hit_ratio_pct"]  = f"{hr * 100:.2f}"
-        d["hit_color"]      = "good" if hr >= 0.55 else ("bad" if hr < 0.50 else "")
-        d["hit_vs_random"]  = f"{'+' if diff >= 0 else ''}{diff * 100:.2f}% vs 50%"
+        d["hit_ratio_pct"] = f"{hr * 100:.2f}"
+        d["hit_color"]     = "good" if hr >= 0.55 else ("bad" if hr < 0.50 else "")
+        d["hit_vs_random"] = f"{'+' if diff >= 0 else ''}{diff * 100:.2f}% vs 50%"
 
     tickers = list(ticker_data.keys())
 
-    # ── Wagi ensembla 
     raw_weights = [
-        {"model": "RecursiveTabular",          "type": "Gradient Boosting", "weight": 0.448},
-        {"model": "Temporal Fusion Transformer",        "type": "Transformer",       "weight": 0.276},
-        {"model": "DeepAR",             "type": "Probabilistic RNN",       "weight": 0.241},
-        {"model": "PatchTST",       "type": "Transformer",  "weight": 0.034},
-        
+        {"model": "RecursiveTabular",           "type": "Gradient Boosting",  "weight": 0.448},
+        {"model": "Temporal Fusion Transformer","type": "Transformer",        "weight": 0.276},
+        {"model": "DeepAR",                     "type": "Probabilistic RNN",  "weight": 0.241},
+        {"model": "PatchTST",                   "type": "Transformer",        "weight": 0.034},
     ]
     max_w = max(w["weight"] for w in raw_weights)
     ensemble_weights = [
@@ -674,32 +764,14 @@ def ml_models(request):
         for w in raw_weights
     ]
 
-    # ── Coverage (jedna linia) ─────────────────────────────────
     cov = coverage_rows[0]
     coverage = [
-        {
-            "level": "α = 0.05",
-            "actual": float(cov["Coverage Actual (0.05)"]),
-            "error":  float(cov["Coverage Error (0.05)"]),
-        },
-        {
-            "level": "α = 0.10",
-            "actual": float(cov["Coverage Actual (0.1)"]),
-            "error":  float(cov["Coverage Error (0.1)"]),
-        },
-        {
-            "level": "α = 0.30",
-            "actual": float(cov["Coverage Actual (0.3)"]),
-            "error":  float(cov["Coverage Error (0.3)"]),
-        },
-        {
-            "level": "α = 0.90",
-            "actual": float(cov["Coverage Actual (0.9)"]),
-            "error":  float(cov["Coverage Error (0.9)"]),
-        },
+        {"level": "α = 0.05", "actual": float(cov["Coverage Actual (0.05)"]), "error": float(cov["Coverage Error (0.05)"])},
+        {"level": "α = 0.10", "actual": float(cov["Coverage Actual (0.1)"]),  "error": float(cov["Coverage Error (0.1)"])},
+        {"level": "α = 0.30", "actual": float(cov["Coverage Actual (0.3)"]),  "error": float(cov["Coverage Error (0.3)"])},
+        {"level": "α = 0.90", "actual": float(cov["Coverage Actual (0.9)"]),  "error": float(cov["Coverage Error (0.9)"])},
     ]
 
-    # ── Formatowanie coverage ──────────────────────────────────
     for c in coverage:
         c["actual_pct"]  = f"{c['actual'] * 100:.2f}"
         c["error_pct"]   = f"{abs(c['error']) * 100:.2f}"
@@ -712,3 +784,96 @@ def ml_models(request):
         "coverage":         coverage,
         "ensemble_weights": ensemble_weights,
     })
+
+
+@login_required
+def robot_deploy(request):
+    from trading.models import RobotSession
+
+    if request.method == "GET":
+        sessions = RobotSession.objects.filter(
+            user=request.user, is_active=True
+        ).values("symbol", "risk_profile", "started_at")
+        return JsonResponse({
+            "sessions": [
+                {
+                    "symbol":       s["symbol"],
+                    "risk_profile": s["risk_profile"],
+                    "started_at":   s["started_at"].strftime("%Y-%m-%d %H:%M"),
+                }
+                for s in sessions
+            ]
+        })
+
+    if request.method == "POST":
+        import json
+        body         = json.loads(request.body)
+        ticker       = body.get("ticker", "").upper()
+        risk_profile = body.get("risk_profile", "aggressive")
+
+        if ticker not in STOCKS:
+            return JsonResponse({"error": f"Unknown ticker: {ticker}"}, status=400)
+        if risk_profile not in ("aggressive", "conservative"):
+            return JsonResponse({"error": "Invalid risk_profile"}, status=400)
+
+        session, created = RobotSession.objects.update_or_create(
+            user=request.user, symbol=ticker,
+            defaults={
+                "risk_profile": risk_profile,
+                "is_active":    True,
+                "stopped_at":   None,
+            }
+        )
+        return JsonResponse({
+            "status":  "deployed",
+            "ticker":  ticker,
+            "profile": risk_profile,
+            "created": created,
+        })
+
+    return JsonResponse({"error": "GET or POST required"}, status=405)
+
+
+@login_required
+def robot_stop(request):
+    if request.method != "POST":
+        return JsonResponse({"error": "POST required"}, status=405)
+
+    import json
+    from django.utils import timezone
+    from trading.models import RobotSession
+
+    body   = json.loads(request.body)
+    ticker = body.get("ticker", "").upper()
+
+    updated = RobotSession.objects.filter(
+        user=request.user, symbol=ticker, is_active=True
+    ).update(is_active=False, stopped_at=timezone.now())
+
+    if updated:
+        return JsonResponse({"status": "stopped", "ticker": ticker})
+    return JsonResponse({"error": "No active session found"}, status=404)
+
+
+@login_required
+def robot_history(request, ticker=None):
+    from trading.models import RobotTrade
+
+    qs = RobotTrade.objects.filter(user=request.user).order_by("-timestamp")
+    if ticker:
+        qs = qs.filter(symbol=ticker.upper())
+
+    trades = [
+        {
+            "timestamp":      t.timestamp.strftime("%Y-%m-%d %H:%M"),
+            "symbol":         t.symbol,
+            "action":         t.action,
+            "price":          float(t.price),
+            "shares":         float(t.shares),
+            "balance_before": float(t.balance_before),
+            "balance_after":  float(t.balance_after),
+            "note":           t.note,
+        }
+        for t in qs[:100]
+    ]
+    return JsonResponse({"trades": trades})

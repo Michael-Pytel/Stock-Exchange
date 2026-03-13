@@ -1,4 +1,5 @@
 {% extends "trading/base.html" %}
+{% block nav_trading %}active{% endblock %}
 {% load static %}
 
 {% block title %}{{ symbol }} — Trade — StockExchange{% endblock %}
@@ -6,6 +7,7 @@
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'trading/css/trading.css' %}"/>
 <link rel="stylesheet" href="{% static 'trading/css/forecast.css' %}"/>
+<script src="https://unpkg.com/lightweight-charts@4.1.3/dist/lightweight-charts.standalone.production.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 {% endblock %}
 
@@ -46,6 +48,7 @@
 
   <div class="trade-topbar-right">
     <a href="{% url 'portfolio' %}" class="trade-nav-link">Portfolio</a>
+    <a href="{% url 'robot' %}"     class="trade-nav-link">Robot</a>
     <div class="trade-balance">
       <span class="trade-balance-label">Balance</span>
       <span class="trade-balance-value" id="live-balance">${{ balance|floatformat:2 }}</span>
@@ -71,22 +74,80 @@
       </div>
     </div>
 
-    <!-- Timeframe bar -->
-    <div class="trade-tf-bar" id="tf-selector">
-      <button class="tf-btn" data-tf="1D">1D</button>
-      <button class="tf-btn" data-tf="1W">1W</button>
-      <button class="tf-btn active" data-tf="1M">1M</button>
-      <button class="tf-btn" data-tf="3M">3M</button>
-      <button class="tf-btn" data-tf="YTD">YTD</button>
-      <button class="tf-btn" data-tf="1Y">1Y</button>
-      <button class="tf-btn" data-tf="5Y">5Y</button>
-      <button class="tf-btn" data-tf="ALL">ALL</button>
+    <!-- Controls bar: timeframe + chart type + market status -->
+    <div class="chart-controls-bar">
+
+      <div class="trade-tf-bar" id="tf-selector">
+        <button class="tf-btn" data-tf="1D">1D</button>
+        <button class="tf-btn" data-tf="1W">1W</button>
+        <button class="tf-btn active" data-tf="1M">1M</button>
+        <button class="tf-btn" data-tf="3M">3M</button>
+        <button class="tf-btn" data-tf="YTD">YTD</button>
+        <button class="tf-btn" data-tf="1Y">1Y</button>
+        <button class="tf-btn" data-tf="5Y">5Y</button>
+        <button class="tf-btn" data-tf="ALL">ALL</button>
+      </div>
+
+      <div class="chart-type-bar" id="chart-type-bar">
+        <button class="ct-btn active" data-ct="line" title="Line">
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><polyline points="1,13 5,7 9,10 15,3" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"/></svg>
+          Line
+        </button>
+        <button class="ct-btn" data-ct="candle" title="Candles">
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><rect x="3" y="5" width="3" height="6" rx="0.5" stroke="currentColor" stroke-width="1.3"/><line x1="4.5" y1="2" x2="4.5" y2="5" stroke="currentColor" stroke-width="1.3"/><line x1="4.5" y1="11" x2="4.5" y2="14" stroke="currentColor" stroke-width="1.3"/><rect x="9" y="4" width="3" height="5" rx="0.5" fill="currentColor"/><line x1="10.5" y1="1" x2="10.5" y2="4" stroke="currentColor" stroke-width="1.3"/><line x1="10.5" y1="9" x2="10.5" y2="14" stroke="currentColor" stroke-width="1.3"/></svg>
+          Candles
+        </button>
+        <button class="ct-btn" data-ct="mountain" title="Mountain">
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M1 13 L5 7 L9 10 L15 3 L15 14 L1 14 Z" stroke="currentColor" stroke-width="1.3" fill="currentColor" fill-opacity="0.2" stroke-linejoin="round"/></svg>
+          Mountain
+        </button>
+        <button class="ct-btn" data-ct="baseline" title="Baseline">
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><polyline points="1,5 6,9 10,7 15,3" stroke="#26a69a" stroke-width="1.3" stroke-linecap="round"/><polyline points="1,12 6,9 10,10 15,13" stroke="#ef5350" stroke-width="1.3" stroke-linecap="round"/><line x1="1" y1="9" x2="15" y2="9" stroke="rgba(255,255,255,0.2)" stroke-width="1" stroke-dasharray="3,2"/></svg>
+          Baseline
+        </button>
+      </div>
+
+      <div class="market-status-badge" id="market-status">
+        <span class="ms-dot" id="ms-dot"></span>
+        <span class="ms-label" id="ms-label">—</span>
+      </div>
+
     </div>
 
     <!-- Chart -->
-    <div class="trade-chart-wrap">
+    <div class="trade-chart-wrap" id="chart-outer-wrap">
       <div class="trade-chart-loading" id="chart-loading"><div class="spinner"></div></div>
-      <canvas id="stockChart"></canvas>
+
+      <!-- OHLCV hover tooltip -->
+      <div class="chart-tooltip" id="chart-tooltip" style="display:none">
+        <div class="ct-date" id="ct-date"></div>
+        <div class="ct-grid">
+          <span class="ct-lbl">O</span><span class="ct-val" id="ct-o"></span>
+          <span class="ct-lbl">H</span><span class="ct-val" id="ct-h" style="color:#22c55e"></span>
+          <span class="ct-lbl">L</span><span class="ct-val" id="ct-l" style="color:#ef5350"></span>
+          <span class="ct-lbl">C</span><span class="ct-val" id="ct-c"></span>
+          <span class="ct-lbl">Vol</span><span class="ct-val" id="ct-v"></span>
+        </div>
+      </div>
+
+      <!-- Baseline drag hint (shown only in baseline mode) -->
+      <div class="baseline-hint" id="baseline-hint" style="display:none">
+        Drag the dashed line to set baseline
+      </div>
+
+      <div id="stockChart" style="width:100%; height:400px;"></div>
+      <div id="volumeChart" style="width:100%; height:72px; margin-top:1px;"></div>
+      <div id="rsiChart"    style="width:100%; height:100px; margin-top:1px; display:none;"></div>
+    </div>
+
+    <!-- Indicator toggles -->
+    <div class="indicator-bar">
+      <span class="ind-label">Indicators</span>
+      <label class="ind-check"><input type="checkbox" id="ind-sma20"> <span>SMA 20</span></label>
+      <label class="ind-check"><input type="checkbox" id="ind-sma50"> <span>SMA 50</span></label>
+      <label class="ind-check"><input type="checkbox" id="ind-ema20"> <span>EMA 20</span></label>
+      <label class="ind-check"><input type="checkbox" id="ind-bb">    <span>BB 20</span></label>
+      <label class="ind-check"><input type="checkbox" id="ind-rsi">   <span>RSI 14</span></label>
     </div>
 
   </div>

@@ -19,10 +19,13 @@
     <a href="/" class="logo">StockExchange</a>
     <div class="nav-pills">
       {% if user.is_authenticated %}
+        <a href="{% url 'trading' %}"   class="nav-pill {% block nav_trading %}{% endblock %}">Trade</a>
+        <a href="{% url 'portfolio' %}" class="nav-pill {% block nav_portfolio %}{% endblock %}">Portfolio</a>
+        <a href="{% url 'robot' %}"     class="nav-pill {% block nav_robot %}{% endblock %}">Robot</a>
         <span class="nav-pill" style="cursor:default; opacity:0.6;">{{ user.first_name|default:user.email }}</span>
         <a href="{% url 'logout' %}" class="nav-pill filled">Log Out</a>
       {% else %}
-        <a href="{% url 'login' %}" class="nav-pill">Log In</a>
+        <a href="{% url 'login' %}"    class="nav-pill">Log In</a>
         <a href="{% url 'register' %}" class="nav-pill filled">Register</a>
       {% endif %}
     </div>
@@ -35,7 +38,7 @@
   <!-- FOOTER -->
   <footer>
     <div class="footer-logo">StockExchange</div>
-    <div class="footer-copy">2025 StockExchange. All rights reserved.</div>
+    <div class="footer-copy">2026 Michał Pytel and Katarzyna Rogalska. All rights reserved.</div>
   </footer>
 
   <script src="{% static 'trading/js/main.js' %}"></script>

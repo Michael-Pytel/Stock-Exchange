@@ -150,3 +150,74 @@ class Position(models.Model):
     @property
     def cost_basis(self):
         return float(self.shares) * float(self.avg_buy_price)
+
+
+# ── RobotSession ──────────────────────────────────────────────────────────────
+class RobotSession(models.Model):
+    """One active robot deployment per user per ticker."""
+
+    class Profile(models.TextChoices):
+        AGGRESSIVE   = "aggressive",   "Aggressive"
+        CONSERVATIVE = "conservative", "Conservative"
+
+    user         = models.ForeignKey(
+        CustomUser, on_delete=models.CASCADE, related_name="robot_sessions"
+    )
+    symbol       = models.CharField(max_length=10)
+    risk_profile = models.CharField(
+        max_length=20, choices=Profile.choices, default=Profile.AGGRESSIVE
+    )
+    budget           = models.DecimalField(
+        max_digits=14, decimal_places=2, default=10000.00,
+        help_text="Total capital allocated to this robot session."
+    )
+    budget_remaining = models.DecimalField(
+        max_digits=14, decimal_places=2, default=10000.00,
+        help_text="Cash portion of the budget not currently invested."
+    )
+    is_active    = models.BooleanField(default=True)
+    started_at   = models.DateTimeField(auto_now_add=True)
+    stopped_at   = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        # one active session per user+ticker at a time
+        unique_together = ("user", "symbol")
+        ordering        = ["-started_at"]
+
+    def __str__(self):
+        status = "active" if self.is_active else "stopped"
+        return f"{self.user.email} — {self.symbol} [{self.risk_profile}] ({status})"
+
+
+# ── RobotTrade ────────────────────────────────────────────────────────────────
+class RobotTrade(models.Model):
+    """Every action the robot takes (Buy / Hold / Sell)."""
+
+    class Action(models.TextChoices):
+        BUY  = "Buy",  "Buy"
+        HOLD = "Hold", "Hold"
+        SELL = "Sell", "Sell"
+
+    session        = models.ForeignKey(
+        RobotSession, on_delete=models.CASCADE, related_name="trades"
+    )
+    user           = models.ForeignKey(
+        CustomUser, on_delete=models.CASCADE, related_name="robot_trades"
+    )
+    symbol         = models.CharField(max_length=10)
+    action         = models.CharField(max_length=4, choices=Action.choices)
+    price          = models.DecimalField(max_digits=14, decimal_places=4)
+    shares         = models.DecimalField(
+        max_digits=14, decimal_places=6, default=0
+    )
+    balance_before = models.DecimalField(max_digits=14, decimal_places=2)
+    balance_after  = models.DecimalField(max_digits=14, decimal_places=2)
+    timestamp      = models.DateTimeField(auto_now_add=True)
+    note           = models.CharField(max_length=255, blank=True)
+
+    class Meta:
+        ordering = ["-timestamp"]
+
+    def __str__(self):
+        return (f"{self.user.email} — {self.action} {self.shares} {self.symbol}"
+                f" @ ${self.price} ({self.timestamp:%Y-%m-%d})")

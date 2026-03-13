@@ -17,202 +17,213 @@
       src="{% static 'trading/images/businesswomen-going-work-together-city.jpg' %}"
       alt=""
       aria-hidden="true"
+      onload="this.classList.add('loaded')"
     />
     <div class="hero-fade"></div>
 
     <div class="hero-content">
       <h1 class="hero-title">Every fortune began<br/>with one decision</h1>
-      <p class="hero-sub">Advanced ML-engineered analysis and autonomous trading robots — so your portfolio grows even when you're not watching.</p>
+      <p class="hero-sub">Advanced ML-engineered analysis and a reinforcement-learning trading robot — so your portfolio grows even when you're not watching.</p>
       <div class="hero-cta">
-        <a href="/register/" class="btn-hero">Get Started</a>
+        {% if user.is_authenticated %}
+          <a href="{% url 'trading' %}" class="btn-hero">Open Terminal</a>
+        {% else %}
+          <a href="{% url 'register' %}" class="btn-hero">Get Started</a>
+        {% endif %}
       </div>
     </div>
 
-    <a class="scroll-arrow" href="#market" aria-label="Scroll to market data">
+    <a class="scroll-arrow" href="#features" aria-label="Scroll down">
       <div class="scroll-arrow-line"></div>
       <div class="scroll-arrow-chevron">
-        <svg viewBox="0 0 14 14">
-          <polyline points="2,4 7,10 12,4"/>
-        </svg>
+        <svg viewBox="0 0 14 14"><polyline points="2,4 7,10 12,4"/></svg>
       </div>
     </a>
   </section>
 
-  <!-- STATS BAR -->
+  <!-- PLATFORM STATS -->
   <div class="stats-bar">
     <div class="stat-item">
-      <div class="stat-value">$<span>2.4</span>B+</div>
-      <div class="stat-label">Daily Volume</div>
+      <div class="stat-value"><span>9</span></div>
+      <div class="stat-label">Tracked Assets</div>
     </div>
     <div class="stat-item">
-      <div class="stat-value"><span>148</span>K+</div>
-      <div class="stat-label">Active Traders</div>
+      <div class="stat-value"><span>8</span></div>
+      <div class="stat-label">Timeframes</div>
     </div>
     <div class="stat-item">
-      <div class="stat-value"><span>9,500</span>+</div>
-      <div class="stat-label">Listed Assets</div>
+      <div class="stat-value"><span>2</span></div>
+      <div class="stat-label">Robot Profiles</div>
     </div>
     <div class="stat-item">
-      <div class="stat-value"><span>99.97</span>%</div>
-      <div class="stat-label">Uptime SLA</div>
+      <div class="stat-value"><span>5</span>+ yrs</div>
+      <div class="stat-label">Training History</div>
     </div>
   </div>
 
-  <!-- LIVE MARKET DATA -->
-  <section class="market-section" id="market">
-    <div class="section-header">
-      <div>
-        <div class="section-eyebrow">Live Market Data</div>
-        <div class="section-title">Current Prices</div>
-      </div>
-      <div class="stock-selector" id="stock-selector">
-        {% for s in stocks %}
-        <button class="stock-pill {% if forloop.first %}active{% endif %}" data-symbol="{{ s }}">{{ s }}</button>
-        {% endfor %}
-      </div>
-    </div>
-
-    <div class="chart-card">
-      <div class="chart-card-header">
-        <div>
-          <div class="chart-symbol" id="chart-symbol">AAPL</div>
-          <div class="chart-company" id="chart-company">Apple Inc.</div>
-        </div>
-        <div>
-          <div class="chart-price-value" id="chart-price">—</div>
-          <div class="chart-price-change pos" id="chart-change">Loading...</div>
-        </div>
-      </div>
-      <div class="chart-tf-bar" id="tf-selector">
-        <button class="tf-btn" data-tf="1D">1D</button>
-        <button class="tf-btn" data-tf="1W">1W</button>
-        <button class="tf-btn active" data-tf="1M">1M</button>
-        <button class="tf-btn" data-tf="3M">3M</button>
-        <button class="tf-btn" data-tf="YTD">YTD</button>
-        <button class="tf-btn" data-tf="1Y">1Y</button>
-        <button class="tf-btn" data-tf="5Y">5Y</button>
-        <button class="tf-btn" data-tf="ALL">ALL</button>
-      </div>
-      <div class="chart-body">
-        <div class="chart-loading" id="chart-loading"><div class="spinner"></div></div>
-        <canvas id="stockChart" height="90"></canvas>
-      </div>
-    </div>
-  </section>
-
-  <!-- TECHNICAL ANALYSIS TOOLS -->
+  <!-- FEATURES SECTION -->
   <section class="features-section" id="features">
     <div>
-      <div class="section-eyebrow">Advanced Tooling</div>
-      <div class="section-title">Discover all functionalities<br/></div>
+      <div class="section-eyebrow">Platform Capabilities</div>
+      <div class="section-title">Everything you need<br/>to trade with an edge</div>
     </div>
     <div class="features-grid">
       <div class="feature-card">
         <div class="feature-marker">01 — Charts</div>
         <div class="feature-title">Multi-Timeframe Analysis</div>
-        <div class="feature-desc">Analyse price action across 1-day to monthly candles. Read exact values and analyze the returns.</div>
+        <div class="feature-desc">Analyse price action from 1-day intraday bars to full multi-year views. Candlestick and line modes with infinite historical scroll.</div>
       </div>
       <div class="feature-card">
-        <div class="feature-marker">02 — Action</div>
-        <div class="feature-title">Trading Simulation</div>
-        <div class="feature-desc">Sign in and discover out trading simulator where you can test your strategy using fake money on real data.</div>
+        <div class="feature-marker">02 — Indicators</div>
+        <div class="feature-title">Technical Overlays</div>
+        <div class="feature-desc">SMA 20/50, EMA 20, Bollinger Bands and RSI 14 rendered directly on the chart. Toggle any combination instantly.</div>
       </div>
       <div class="feature-card">
-        <div class="feature-marker">03 — Forecast</div>
+        <div class="feature-marker">03 — Simulation</div>
+        <div class="feature-title">Paper Trading</div>
+        <div class="feature-desc">Test your strategy risk-free with a simulated balance on live market data. Track every position, P&amp;L and portfolio delta in real time.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-marker">04 — Forecast</div>
         <div class="feature-title">ML Return Forecast</div>
-        <div class="feature-desc">Analyse 1-day returns predicted for the following business days using ML algorithms.</div>
-      </div>
-      <div class="feature-card">
-        <div class="feature-marker">04 — Alerts</div>
-        <div class="feature-title">Custom Alerts</div>
-        <div class="feature-desc">Set minimal return threshold and never miss a breakout or a critical level, regardless of market hours.</div>
+        <div class="feature-desc">Next-day directional forecasts generated by ensemble ML models. Calibrated confidence intervals with Winkler score evaluation.</div>
       </div>
       <div class="feature-card">
         <div class="feature-marker">05 — Evaluation</div>
-        <div class="feature-title">Explore Forecast Reliability</div>
-        <div class="feature-desc">See which ML models are used to make predictions and evaluate their backtest scores to estimate the reliability.</div>
+        <div class="feature-title">Model Transparency</div>
+        <div class="feature-desc">Inspect the full backtest scorecard — hit ratios, coverage rates and per-ticker Winkler scores — to judge forecast reliability yourself.</div>
       </div>
       <div class="feature-card">
         <div class="feature-marker">06 — Robot</div>
-        <div class="feature-title">Agentic AI</div>
-        <div class="feature-desc">Get customized trading startegy from out AI Agent to help you with decsion making.</div>
+        <div class="feature-title">Autonomous RL Agent</div>
+        <div class="feature-desc">A PPO-trained reinforcement-learning agent that reads live market state and issues Buy / Hold / Sell signals. Aggressive and Conservative profiles available.</div>
       </div>
     </div>
   </section>
 
-  <!-- AUTOMATED TRADING ROBOT -->
+  <!-- ROBOT SECTION -->
   <section class="robot-section" id="robot">
-    <div class="robot-layout">
-      <div>
-        <div class="section-eyebrow">Algorithmic Trading</div>
-        <div class="section-title">Your Personal<br/>Trading Robot</div>
-        <p class="robot-desc">
-          Deploy a fully autonomous trading agent that monitors markets around the clock, executes strategies with millisecond precision, and adapts dynamically — while you remain in full control of every parameter.
-        </p>
-        <div class="robot-features">
-          <div class="robot-feature-row">
-            <div class="robot-feature-dot"></div>
-            <div class="robot-feature-text">Strategy backtesting on over ten years of historical data</div>
+
+    <div class="robot-header">
+      <div class="section-eyebrow">Reinforcement Learning</div>
+      <div class="section-title">Your Personal<br/>Trading Robot</div>
+      <p class="robot-intro">
+        A PPO agent trained on years of OHLCV data learns to maximise risk-adjusted returns — then issues live signals every market day. Choose Aggressive for maximum alpha or Conservative for drawdown control.
+      </p>
+    </div>
+
+    <!-- METRICS ROW -->
+    <div class="robot-metrics-row" id="robot-metrics">
+      <div class="rmetric-card">
+        <div class="rmetric-value" id="rm-return">—</div>
+        <div class="rmetric-label">Agent Total Return</div>
+        <div class="rmetric-sub" id="rm-bah-return">vs B&amp;H —</div>
+      </div>
+      <div class="rmetric-card accent">
+        <div class="rmetric-value" id="rm-outperform">—</div>
+        <div class="rmetric-label">Outperformance</div>
+        <div class="rmetric-sub">vs Buy &amp; Hold</div>
+      </div>
+      <div class="rmetric-card">
+        <div class="rmetric-value" id="rm-sharpe">—</div>
+        <div class="rmetric-label">Sharpe Ratio</div>
+        <div class="rmetric-sub" id="rm-bah-sharpe">vs B&amp;H —</div>
+      </div>
+      <div class="rmetric-card">
+        <div class="rmetric-value" id="rm-winrate">—</div>
+        <div class="rmetric-label">Win Rate</div>
+        <div class="rmetric-sub" id="rm-trades">— trades</div>
+      </div>
+      <div class="rmetric-card neg">
+        <div class="rmetric-value" id="rm-dd">—</div>
+        <div class="rmetric-label">Max Drawdown</div>
+        <div class="rmetric-sub" id="rm-bah-dd">vs B&amp;H —</div>
+      </div>
+    </div>
+
+    <!-- CHART CONTROLS -->
+    <div class="robot-chart-controls">
+      <div class="rctrl-left">
+        <span class="rctrl-label">Asset</span>
+        <div class="rctrl-pills" id="rb-ticker-pills">
+          {% for s in stocks %}
+          <button class="rctrl-pill {% if forloop.first %}active{% endif %}" data-ticker="{{ s }}">{{ s }}</button>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="rctrl-right">
+        <span class="rctrl-label">Profile</span>
+        <div class="rctrl-pills" id="rb-profile-pills">
+          <button class="rctrl-pill active" data-profile="aggressive">Aggressive</button>
+          <button class="rctrl-pill" data-profile="conservative">Conservative</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- CHARTS GRID -->
+    <div class="robot-charts-grid">
+
+      <div class="rchart-panel main-panel">
+        <div class="rchart-panel-header">
+          <div class="rchart-panel-title">Equity Curve</div>
+          <div class="rchart-panel-legend">
+            <span class="rchart-leg agent">Agent</span>
+            <span class="rchart-leg bah">Buy &amp; Hold</span>
           </div>
-          <div class="robot-feature-row">
-            <div class="robot-feature-dot"></div>
-            <div class="robot-feature-text">Dynamic position sizing with automated stop-loss management</div>
+        </div>
+        <div class="rchart-body">
+          <div class="rchart-loading" id="equity-loading">
+            <div class="rchart-spinner"></div>
           </div>
-          <div class="robot-feature-row">
-            <div class="robot-feature-dot"></div>
-            <div class="robot-feature-text">Multi-asset portfolio rebalancing on configurable schedules</div>
+          <canvas id="equityChart"></canvas>
+        </div>
+      </div>
+
+      <div class="rchart-panel side-panel">
+        <div class="rchart-panel-header">
+          <div class="rchart-panel-title">Trade Outcomes</div>
+        </div>
+        <div class="rchart-body donut-body">
+          <canvas id="winLossChart"></canvas>
+          <div class="donut-centre" id="donut-centre">
+            <div class="donut-pct" id="donut-pct">—</div>
+            <div class="donut-sub">Win Rate</div>
           </div>
-          <div class="robot-feature-row">
-            <div class="robot-feature-dot"></div>
-            <div class="robot-feature-text">News sentiment integration and earnings event filters</div>
+        </div>
+        <div class="rchart-outcome-row">
+          <div class="outcome-item win">
+            <div class="outcome-dot"></div>
+            <div>
+              <div class="outcome-val" id="wins-val">—</div>
+              <div class="outcome-lbl">Wins</div>
+            </div>
           </div>
-          <div class="robot-feature-row">
-            <div class="robot-feature-dot"></div>
-            <div class="robot-feature-text">Full audit trail and real-time performance dashboard</div>
+          <div class="outcome-item loss">
+            <div class="outcome-dot"></div>
+            <div>
+              <div class="outcome-val" id="losses-val">—</div>
+              <div class="outcome-lbl">Losses</div>
+            </div>
           </div>
         </div>
       </div>
 
-      <div class="robot-visual">
-        <div class="robot-chart-label">Bot Performance — 30 Day</div>
-        <div class="robot-bars">
-          <div class="robot-bar profit" style="height:45%"></div>
-          <div class="robot-bar loss"   style="height:28%"></div>
-          <div class="robot-bar profit" style="height:68%"></div>
-          <div class="robot-bar profit" style="height:54%"></div>
-          <div class="robot-bar loss"   style="height:22%"></div>
-          <div class="robot-bar profit" style="height:82%"></div>
-          <div class="robot-bar profit" style="height:63%"></div>
-          <div class="robot-bar profit" style="height:91%"></div>
-          <div class="robot-bar loss"   style="height:33%"></div>
-          <div class="robot-bar profit" style="height:76%"></div>
-          <div class="robot-bar profit" style="height:80%"></div>
-          <div class="robot-bar profit" style="height:96%"></div>
-        </div>
-        <div class="trade-signal">
-          <div class="signal-dot"></div>
-          <div class="signal-text">Bot Active — Scanning 9 Positions</div>
-        </div>
-        <div class="robot-stats-row">
-          <div class="robot-stat">
-            <div class="robot-stat-value">+18.4%</div>
-            <div class="robot-stat-label">30D Return</div>
-          </div>
-          <div class="robot-stat">
-            <div class="robot-stat-value">94%</div>
-            <div class="robot-stat-label">Win Rate</div>
-          </div>
-          <div class="robot-stat">
-            <div class="robot-stat-value">1.87</div>
-            <div class="robot-stat-label">Sharpe Ratio</div>
-          </div>
-        </div>
-      </div>
     </div>
+
+    <div class="robot-cta-row">
+      <a href="{% url 'robot' %}" class="btn-robot-cta">
+        Launch Robot →
+      </a>
+      <span class="robot-cta-note">Full signal history, live deployment &amp; portfolio integration</span>
+    </div>
+
   </section>
 
 {% endblock %}
 
 {% block extra_js %}
+<script>
+  const STOCKS = {{ stocks_json|safe }};
+</script>
 <script src="{% static 'trading/js/home.js' %}"></script>
 {% endblock %}
