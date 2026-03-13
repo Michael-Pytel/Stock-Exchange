@@ -46,7 +46,7 @@ def load_models():
 
         bot_path = _cfg("TRADING_BOT_PATH", default=os.path.join(
             os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-            "trading_bot"
+            "trading","trading_bot"
         ))
 
         for profile in ("aggressive", "conservative"):
