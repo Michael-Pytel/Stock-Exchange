@@ -23,6 +23,7 @@ from .models import CustomUser, Position
 
 # ----------------Autogluon models -----------------
 AUTOGLUON_MODEL_PATH = os.path.join(settings.BASE_DIR, "trading", "autogluon_models", "gluon_models")
+
 _predictor_cache = None
 
 # ── Alpaca ──────────────────────────────────────────────────────
@@ -103,7 +104,7 @@ def stock_data(request, symbol):
         # The robot's fetcher already downloaded full history as parquet — use that.
         if tf in ("ALL", "5Y"):
             import glob
-            bot_path = config("TRADING_BOT_PATH")
+            bot_path = os.path.join(settings.BASE_DIR, "trading", "trading_bot")
             data_dir = os.path.join(bot_path, "market_data")
             parquet  = os.path.join(data_dir, f"{symbol}.parquet")
             if not os.path.exists(parquet):
