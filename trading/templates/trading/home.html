@@ -21,16 +21,20 @@
     />
     <div class="hero-fade"></div>
 
-    <div class="hero-content">
-      <h1 class="hero-title">Every fortune began<br/>with one decision</h1>
-      <p class="hero-sub">Advanced ML-engineered analysis and a reinforcement-learning trading robot — so your portfolio grows even when you're not watching.</p>
-      <div class="hero-cta">
-        {% if user.is_authenticated %}
-          <a href="{% url 'trading' %}" class="btn-hero">Open Terminal</a>
-        {% else %}
-          <a href="{% url 'register' %}" class="btn-hero">Get Started</a>
-        {% endif %}
+    <div class="hero-inner">
+      <div class="hero-content">
+        <h1 class="hero-title">Every fortune began<br/>with one decision</h1>
+        <p class="hero-sub">Advanced ML-engineered analysis and a reinforcement-learning trading robot — so your portfolio grows even when you're not watching.</p>
+        <div class="hero-cta">
+          {% if user.is_authenticated %}
+            <a href="{% url 'trading' %}" class="btn-hero">Open Terminal</a>
+          {% else %}
+            <a href="{% url 'register' %}" class="btn-hero">Get Started</a>
+          {% endif %}
+        </div>
       </div>
+
+
     </div>
 
     <a class="scroll-arrow" href="#features" aria-label="Scroll down">
@@ -41,27 +45,8 @@
     </a>
   </section>
 
-  <!-- PLATFORM STATS -->
-  <div class="stats-bar">
-    <div class="stat-item">
-      <div class="stat-value"><span>9</span></div>
-      <div class="stat-label">Tracked Assets</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-value"><span>8</span></div>
-      <div class="stat-label">Timeframes</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-value"><span>2</span></div>
-      <div class="stat-label">Robot Profiles</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-value"><span>5</span>+ yrs</div>
-      <div class="stat-label">Training History</div>
-    </div>
-  </div>
 
-  <!-- FEATURES SECTION -->
+  <!-- FEATURES SECTION — editorial two-column -->
   <section class="features-section" id="features">
     <div>
       <div class="section-eyebrow">Platform Capabilities</div>
@@ -101,9 +86,10 @@
     </div>
   </section>
 
-  <!-- ROBOT SECTION -->
+  <!-- ROBOT SECTION — horizontal split layout -->
   <section class="robot-section" id="robot">
 
+    <!-- LEFT: header -->
     <div class="robot-header">
       <div class="section-eyebrow">Reinforcement Learning</div>
       <div class="section-title">Your Personal<br/>Trading Robot</div>
@@ -112,36 +98,7 @@
       </p>
     </div>
 
-    <!-- METRICS ROW -->
-    <div class="robot-metrics-row" id="robot-metrics">
-      <div class="rmetric-card">
-        <div class="rmetric-value" id="rm-return">—</div>
-        <div class="rmetric-label">Agent Total Return</div>
-        <div class="rmetric-sub" id="rm-bah-return">vs B&amp;H —</div>
-      </div>
-      <div class="rmetric-card accent">
-        <div class="rmetric-value" id="rm-outperform">—</div>
-        <div class="rmetric-label">Outperformance</div>
-        <div class="rmetric-sub">vs Buy &amp; Hold</div>
-      </div>
-      <div class="rmetric-card">
-        <div class="rmetric-value" id="rm-sharpe">—</div>
-        <div class="rmetric-label">Sharpe Ratio</div>
-        <div class="rmetric-sub" id="rm-bah-sharpe">vs B&amp;H —</div>
-      </div>
-      <div class="rmetric-card">
-        <div class="rmetric-value" id="rm-winrate">—</div>
-        <div class="rmetric-label">Win Rate</div>
-        <div class="rmetric-sub" id="rm-trades">— trades</div>
-      </div>
-      <div class="rmetric-card neg">
-        <div class="rmetric-value" id="rm-dd">—</div>
-        <div class="rmetric-label">Max Drawdown</div>
-        <div class="rmetric-sub" id="rm-bah-dd">vs B&amp;H —</div>
-      </div>
-    </div>
-
-    <!-- CHART CONTROLS -->
+    <!-- RIGHT TOP: chart controls -->
     <div class="robot-chart-controls">
       <div class="rctrl-left">
         <span class="rctrl-label">Asset</span>
@@ -160,7 +117,46 @@
       </div>
     </div>
 
-    <!-- CHARTS GRID -->
+    <!-- LEFT MIDDLE: metrics — vertical stack -->
+    <div class="robot-metrics-row" id="robot-metrics">
+      <div class="rmetric-card accent">
+        <div class="rmetric-left">
+          <div class="rmetric-label">Agent Total Return</div>
+          <div class="rmetric-sub" id="rm-bah-return">vs B&amp;H —</div>
+        </div>
+        <div class="rmetric-value" id="rm-return">—</div>
+      </div>
+      <div class="rmetric-card">
+        <div class="rmetric-left">
+          <div class="rmetric-label">Outperformance</div>
+          <div class="rmetric-sub">vs Buy &amp; Hold</div>
+        </div>
+        <div class="rmetric-value" id="rm-outperform">—</div>
+      </div>
+      <div class="rmetric-card">
+        <div class="rmetric-left">
+          <div class="rmetric-label">Sharpe Ratio</div>
+          <div class="rmetric-sub" id="rm-bah-sharpe">vs B&amp;H —</div>
+        </div>
+        <div class="rmetric-value" id="rm-sharpe">—</div>
+      </div>
+      <div class="rmetric-card">
+        <div class="rmetric-left">
+          <div class="rmetric-label">Win Rate</div>
+          <div class="rmetric-sub" id="rm-trades">— trades</div>
+        </div>
+        <div class="rmetric-value" id="rm-winrate">—</div>
+      </div>
+      <div class="rmetric-card neg">
+        <div class="rmetric-left">
+          <div class="rmetric-label">Max Drawdown</div>
+          <div class="rmetric-sub" id="rm-bah-dd">vs B&amp;H —</div>
+        </div>
+        <div class="rmetric-value" id="rm-dd">—</div>
+      </div>
+    </div>
+
+    <!-- RIGHT: charts grid -->
     <div class="robot-charts-grid">
 
       <div class="rchart-panel main-panel">
@@ -210,6 +206,7 @@
 
     </div>
 
+    <!-- LEFT BOTTOM: CTA -->
     <div class="robot-cta-row">
       <a href="{% url 'robot' %}" class="btn-robot-cta">
         Launch Robot →
