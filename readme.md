@@ -156,3 +156,7 @@ Raw OHLCV data is enriched with over 50 derived features before training and inf
 ## Supported Tickers
 
 AAPL · AMZN · GOOGL · JPM · META · MSFT · NVDA · TSLA · V
+
+### Authors 
+* Michał Pytel 
+* [Katarzyna Rogalska](https://github.com/katarzynarogalska) 
