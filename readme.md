@@ -158,5 +158,5 @@ Raw OHLCV data is enriched with over 50 derived features before training and inf
 AAPL · AMZN · GOOGL · JPM · META · MSFT · NVDA · TSLA · V
 
 ### Authors 
-* Michał Pytel 
+* [Michał Pytel](https://github.com/Michael-Pytel)
 * [Katarzyna Rogalska](https://github.com/katarzynarogalska) 
