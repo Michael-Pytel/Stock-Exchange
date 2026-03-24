@@ -3,6 +3,9 @@
 An algorithmic trading platform combining reinforcement learning, probabilistic time-series forecasting, and paper trading with real-time market data. The platform is built around three core modules: a PPO-based trading robot, an AutoGluon ensemble forecaster, and a full paper trading interface — all powered by live data from Alpaca Markets.
 
 ---
+## Demo
+[![Watch the demo](https://img.youtube.com/vi/2YFcmvopULQ/maxresdefault.jpg)](https://www.youtube.com/watch?v=2YFcmvopULQ)
+
 
 ## Trading Robot (PPO)
 
