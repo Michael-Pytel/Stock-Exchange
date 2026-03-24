@@ -6,6 +6,7 @@ An algorithmic trading platform combining reinforcement learning, probabilistic 
 ## Demo
 [![Watch the demo](https://img.youtube.com/vi/2YFcmvopULQ/maxresdefault.jpg)](https://www.youtube.com/watch?v=2YFcmvopULQ)
 
+[Link to the demo](https://www.youtube.com/watch?v=2YFcmvopULQ)
 
 ## Trading Robot (PPO)
 
